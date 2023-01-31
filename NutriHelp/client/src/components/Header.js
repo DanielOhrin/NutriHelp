@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink as RRNavLink } from "react-router-dom";
 import {
   Collapse,
@@ -9,48 +9,61 @@ import {
   NavItem,
   NavLink
 } from 'reactstrap';
-import { logout } from '../modules/authManager';
+import { getEmail, logout } from '../modules/authManager';
 
 export default function Header({ isLoggedIn, role }) {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setEmail(getEmail())
+    }
+  }, [isLoggedIn])
 
   return (
     <div>
-      <Navbar color="light" light expand="md">
-        <NavbarBrand tag={RRNavLink} to="/">Tabloid</NavbarBrand>
+      <Navbar className="px-3" color="success" dark expand="md">
+        <NavbarBrand id="nav-brand" tag={RRNavLink} to="/">NutriHelp</NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
-          <Nav className="mr-auto" navbar>
+          <Nav className="mr-auto" navbar justified>
             { /* When isLoggedIn === true, we will render the Home link */}
             {isLoggedIn &&
               <>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/">Home</NavLink>
                 </NavItem>
+              </>
+            }
+            {role === "User" &&
+              <>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/userposts">My Posts</NavLink>
+                  <NavLink tag={RRNavLink} to="/profile">Profile</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/daily">Daily</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/support">Support</NavLink>
                 </NavItem>
               </>
             }
             {role === "Admin" &&
               <>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/categories">Categories</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} to="/tags">Tags</NavLink>
-                </NavItem>
-                <NavItem>
                   <NavLink tag={RRNavLink} to="/users">Users</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/tickets">Tickets</NavLink>
                 </NavItem>
               </>
             }
             {isLoggedIn &&
               <>
                 <NavItem>
-                  <a aria-current="page" className="nav-link"
-                    style={{ cursor: "pointer" }} onClick={logout}>Logout</a>
+                  <NavLink tag={RRNavLink} to="/login" onClick={logout}>{isOpen ? `Logout ${email}` : "Logout"}</NavLink>
                 </NavItem>
               </>
             }
@@ -66,6 +79,9 @@ export default function Header({ isLoggedIn, role }) {
             }
           </Nav>
         </Collapse>
+        {!isOpen && isLoggedIn &&
+          <span className="white">{email}</span>
+        }
       </Navbar>
     </div>
   );
