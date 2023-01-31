@@ -4,14 +4,13 @@ import "firebase/compat/auth";
 const _apiUrl = "/api/userprofile";
 
 const _doesUserExist = (firebaseUserId) => {
-  throw new Error("Not Implemented")
   return getToken().then((token) =>
     fetch(`${_apiUrl}/DoesUserExist/${firebaseUserId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then(resp => resp.ok));
+    }).then(res => res.ok));
 };
 
 const _saveUser = (userProfile) => {
@@ -26,6 +25,17 @@ const _saveUser = (userProfile) => {
       body: JSON.stringify(userProfile)
     }).then(resp => resp.json()));
 };
+
+export const getRole = (firebaseUserId) => {
+  return getToken().then(token => {
+    return fetch(`${_apiUrl}/usertype/${firebaseUserId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+  }).then(res => res.json())
+}
 
 export const getToken = () => firebase.auth().currentUser.getIdToken();
 
