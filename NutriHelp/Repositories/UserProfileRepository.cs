@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Data;
+
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
 using NutriHelp.Models;
@@ -63,6 +65,25 @@ namespace NutriHelp.Repositories
 
                         return userType;
                     }
+                }
+            }
+        }
+
+        public bool IsDuplicate(string field, string value)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "IsDuplicateUserData";
+
+                    DbUtils.AddParameter(cmd, "@Field", field);
+                    DbUtils.AddParameter(cmd, "@Value", value);
+
+                    return (int)cmd.ExecuteScalar() != 0;
                 }
             }
         }

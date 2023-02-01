@@ -37,7 +37,7 @@ namespace NutriHelp.Controllers
         public IActionResult GetUserType([FromRoute] string firebaseUserId)
         {
             UserType userType = _userProfileRepository.GetUserType(firebaseUserId);
-            
+
             if (userType == null)
             {
                 return BadRequest();
@@ -45,5 +45,11 @@ namespace NutriHelp.Controllers
 
             return Ok(userType);
         }
+
+        [HttpGet("isDuplicateData")]
+        public IActionResult IsDuplicateData([FromQuery] string field, [FromQuery] string value)
+        {
+            return Ok(_userProfileRepository.IsDuplicate(field, value));
+        }
     }
-}
+} 
