@@ -1,98 +1,199 @@
-import React, { useState } from "react";
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { useNavigate } from "react-router-dom";
 import { register } from "../../modules/authManager";
+import { isDuplicateUserData } from "../../modules/userProfileManager";
 
 export default function Register() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(),
+    [credentials, setCredentials] = useState({
+      email: "",
+      password: "",
+      confirmPassword: ""
+    }),
+    [profile, setProfile] = useState({
+      userName: "",
+      firstName: "",
+      lastName: "",
+      gender: "",
+      birthDate: "",
+      weight: 0,
+      height: 0,
+      activityLevel: 0,
+      weightGoal: 0
+    }),
+    [editingCredentials, setEditingCredentials] = useState(true)
 
-  const [firstName, setFirstName] = useState();
-  const [lastName, setLastName] = useState();
-  const [displayName, setDisplayName] = useState();
-  const [email, setEmail] = useState();
-  const [imageLocation, setImageLocation] = useState();
-  const [password, setPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
+  // Variables for debouncing
+  const userNameTimeout = setTimeout(() => { }, 5000),
+    emailTimeout = setTimeout(() => { }, 5000)
 
-  const registerClick = (e) => {
-    e.preventDefault();
-    if (password && password !== confirmPassword) {
-      alert("Passwords don't match. Do better.");
+
+  useEffect(() => {
+    isDuplicateUserData("email", "xqiam@outlook.com").then(bool => console.log(bool));
+  }, [])
+
+  const changeState = (e) => {
+    if (Object.keys(credentials).includes(e.target.name)) {
+      const copy = { ...credentials }
+      copy[e.target.name] = e.target.value
+
+      setCredentials(copy)
     } else {
-      const userProfile = {
-        firstName,
-        lastName,
-        displayName,
-        imageLocation,
-        email,
-      };
-      register(userProfile, password).then(() => navigate("/"));
+      const copy = { ...profile }
+      copy[e.target.name] = e.target.value
+
+      setProfile(copy)
     }
-  };
+  }
+
+  const isUnique = useCallback((field) => {
+
+  }, [])
+
+  const validateCredentials = (e) => {
+    e.preventDefault()
+
+    if (true) {
+      setEditingCredentials(!editingCredentials)
+    } else {
+
+    }
+  }
 
   return (
-    <Form onSubmit={registerClick}>
-      <fieldset>
-        <FormGroup>
-          <Label htmlFor="firstName">First Name</Label>
-          <Input
-            id="firstName"
-            type="text"
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="lastName">Last Name</Label>
-          <Input
-            id="lastName"
-            type="text"
-            onChange={(e) => setLastName(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="displayName">Display Name</Label>
-          <Input
-            id="displayName"
-            type="text"
-            onChange={(e) => setDisplayName(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="email">Email</Label>
-          <Input
-            id="email"
-            type="text"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="imageLocation">Profile Image URL</Label>
-          <Input
-            id="imageLocation"
-            type="text"
-            onChange={(e) => setImageLocation(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="confirmPassword">Confirm Password</Label>
-          <Input
-            id="confirmPassword"
-            type="password"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Button>Register</Button>
-        </FormGroup>
-      </fieldset>
-    </Form>
+    <section id="register-container">
+      <div id="register-box">
+        {
+          editingCredentials ?
+            <Form onSubmit={validateCredentials}>
+              <fieldset>
+                <FormGroup>
+                  <Label htmlFor="userName">Username</Label>
+                  <Input
+                    className="register-input"
+                    name="userName"
+                    type="text"
+                    onChange={changeState}
+                  />
+                  <FormText color="danger" className="hidden">An account with that username already exists.</FormText>
+                </FormGroup>
+                <FormGroup>
+                  <Label for="email">Email</Label>
+                  <Input
+                    className="register-input"
+                    name="email"
+                    type="text"
+                    onChange={changeState}
+                  />
+                  <FormText color="danger" className="hidden">An account with that email already exists.</FormText>
+                </FormGroup>
+                <FormGroup>
+                  <Label for="password">Password</Label>
+                  <Input
+                    className="register-input"
+                    name="password"
+                    type="password"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="confirmPassword">Confirm Password</Label>
+                  <Input
+                    className="register-input"
+                    name="confirmPassword"
+                    type="password"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Button className="mx-2">Next</Button>
+                  <FormText>Already have an account?</FormText>
+                </FormGroup>
+              </fieldset>
+            </Form>
+            : <Form>
+              <fieldset>
+                <FormGroup>
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    className="register-input"
+                    name="firstName"
+                    type="text"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    className="register-input"
+                    name="lastName"
+                    type="text"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="gender">Gender (Change to select)</Label>
+                  <Input
+                    className="register-input"
+                    name="gender"
+                    type="text"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="birthDate">Date of Birth (Change to date input (local))</Label>
+                  <Input
+                    className="register-input"
+                    name="birthDate"
+                    type="text"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="weight">Weight (Change to include calculations)</Label>
+                  <Input
+                    className="register-input"
+                    name="weight"
+                    type="text"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="height">Height (Change to include calculations)</Label>
+                  <Input
+                    className="register-input"
+                    name="height"
+                    type="text"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="activityLevel">activity level(Change to select)</Label>
+                  <Input
+                    className="register-input"
+                    name="activityLevel"
+                    type="text"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="weightGoal">Weight goal (Change to select)</Label>
+                  <Input
+                    className="register-input"
+                    name="weightGoal"
+                    type="text"
+                    onChange={changeState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Button onClick={(e) => { e.preventDefault(); setEditingCredentials(!editingCredentials) }}>Back</Button>
+                  <Button className="mx-4">Register</Button>
+                </FormGroup>
+              </fieldset>
+            </Form >
+        }
+      </div>
+    </section>
   );
 }

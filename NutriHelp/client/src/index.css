@@ -1,4 +1,20 @@
+/*! DEFAULT STYLES */
+
+html {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+#root > main {
+  height: 100%;
+  background-color: rgba(255, 255, 137, 0.74);
+}
+
 body {
+  height: 100%;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -12,6 +28,20 @@ code {
     monospace;
 }
 
+/** SPECIFIC STYLES **/
+
+#register-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+}
+
+
+
+/** UTILITY STYLES **/
+
 #nav-brand {
   font-size: 2rem;
 }
@@ -22,4 +52,28 @@ code {
 
 .white {
   color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+.register-input {
+  width: auto !important;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
 }
