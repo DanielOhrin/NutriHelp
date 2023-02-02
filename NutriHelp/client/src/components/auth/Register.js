@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { useNavigate } from "react-router-dom";
 import { register } from "../../modules/authManager";
@@ -25,13 +25,19 @@ export default function Register() {
     }),
     [editingCredentials, setEditingCredentials] = useState(true)
 
-  // Variables for debouncing
-  const usernameTimeout = setTimeout(() => { }, 5000),
-    emailTimeout = setTimeout(() => { }, 5000)
+  // Validation variables
+  const [emailWarning, setEmailWarning] = useState(null),
+    [usernameWarning, setUsernameWarning] = useState(null),
+    [nextBtn, setNextBtn] = useState(null)
 
+  // Variables for debouncing
+  const usernameTimeout = useRef(null),
+    emailTimeout = useRef(null)
 
   useEffect(() => {
-    isDuplicateUserData("email", "xqiam@outlook.com").then(bool => console.log(bool));
+    setEmailWarning(document.getElementById("register-email-validation"))
+    setUsernameWarning(document.getElementById("register-username-validation"))
+    setNextBtn(document.getElementById("register-next-btn"))
   }, [])
 
   const changeState = (e) => {
@@ -53,10 +59,42 @@ export default function Register() {
     }
   }
 
+  useEffect(() => {
+    clearTimeout(emailTimeout.current)
 
-  const isUnique = useCallback((field) => {
+    emailTimeout.current = setTimeout(() => {
+      if (credentials.email === "") return;
+      isDuplicateUserData("email", credentials.email)
+        .then(bool => {
+          if (bool) {
+            emailWarning.style.display = "inline"
+          } else {
+            emailWarning.style.display = "none"
+          }
+          setEmailWarning(document.getElementById("register-email-validation"))
+        })
+    }, 2000)
+  }, [credentials.email, emailWarning])
 
-  }, [])
+  useEffect(() => {
+    clearTimeout(usernameTimeout.current)
+
+    usernameTimeout.current = setTimeout(() => {
+      if (profile.username === "") return;
+
+      isDuplicateUserData("username", profile.username)
+        .then(bool => {
+          if (bool) {
+            usernameWarning.style.display = "inline"
+          } else {
+            usernameWarning.style.display = "none"
+          }
+          setUsernameWarning(document.getElementById("register-username-validation"))
+        })
+    }, 2000)
+
+
+  }, [profile.username, usernameWarning])
 
   const validateCredentials = (e) => {
     e.preventDefault()
@@ -88,7 +126,7 @@ export default function Register() {
                     maxLength={15}
                     onChange={changeState}
                   />
-                  <FormText color="danger" className="hidden">An account with that username already exists.</FormText>
+                  <FormText color="danger" id="register-username-validation" className="hidden">An account with that username already exists.</FormText>
                 </FormGroup>
                 <FormGroup>
                   <Label for="email">Email</Label>
@@ -101,7 +139,7 @@ export default function Register() {
                     maxLength={30}
                     onChange={changeState}
                   />
-                  <FormText color="danger" className="hidden">An account with that email already exists.</FormText>
+                  <FormText color="danger" id="register-email-validation" className="hidden">An account with that email already exists.</FormText>
                 </FormGroup>
                 <FormGroup>
                   <Label for="password">Password</Label>
@@ -127,23 +165,13 @@ export default function Register() {
                   <FormText color="danger" className={(credentials.password === credentials.confirmPassword ? "hidden" : "")}>Passwords do not match.</FormText>
                 </FormGroup>
                 <FormGroup>
-                  <Button className="mx-2">Next</Button>
+                  <Button id="register-next-btn" className="mx-2">Next</Button>
                   <FormText>Already have an account?</FormText>
                 </FormGroup>
               </fieldset>
             </Form>
             : <Form>
               <fieldset>
-                <Input
-                  autoComplete="username"
-                  className="register-input"
-                  name="username"
-                  type="text"
-                  value={profile.username}
-                  maxLength={15}
-                  onChange={changeState}
-                  hidden
-                />
                 <FormGroup>
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
@@ -225,7 +253,7 @@ export default function Register() {
                   </select>
                 </FormGroup>
                 <FormGroup>
-                  <Button onClick={(e) => { e.preventDefault(); setEditingCredentials(!editingCredentials) }}>Back</Button>
+                  <Button onClick={(e) => { clearTimeout(); navigate("/login") }}>Cancel</Button>
                   <Button className="mx-4">Register</Button>
                 </FormGroup>
               </fieldset>
