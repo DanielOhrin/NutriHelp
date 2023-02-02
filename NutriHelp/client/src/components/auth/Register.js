@@ -3,7 +3,7 @@ import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { useNavigate } from "react-router-dom";
 import { register } from "../../modules/authManager";
 import { isDuplicateUserData } from "../../modules/userProfileManager";
-import logo from "../../assets/images/NutriHelp_logo.png"
+import logo from "../../assets/images/company_logo.png"
 
 export default function Register() {
   const navigate = useNavigate(),

@@ -8,7 +8,7 @@
 }
 
 #register-box {
-  margin-right: 15rem;
+  margin-right: 22.5rem;
   border: 1px solid black;
   border-radius: 1rem;
   padding: 1rem 2rem 1rem 2rem;
@@ -16,25 +16,26 @@
 }
 
 .logo-background { 
-  margin-left: 5rem;
+  margin-left: 22.5rem;
   align-self: flex-start;
   position: absolute;
-  max-width: 750px;
+  min-width: 150px;
+  max-width: 400px;
 }
 
-@media screen and (max-width: 1725px) {
+@media screen and (max-width: 1800px) {
   .logo-background {
-    width: 35%;
+    width: 20%;
   }
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1720px) {
   .logo-background {
-    width: 25%;
+    width: 15%;
   }
 }
 
-@media screen and (max-width: 1150px) {
+@media screen and (max-width: 1580px) {
   #register-box {
     align-self: center;
     margin-right: 0;
@@ -43,12 +44,6 @@
   .logo-background {
     position: relative;
     align-self: center;
-    margin-right: 5rem;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .logo-background {
-    width: 150px;
+    margin-left: 0;
   }
 }
