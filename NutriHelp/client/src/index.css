@@ -4,7 +4,6 @@ html {
   height: 100%;
 }
 
-
 body {
   height: 100%;
   margin: 0;
@@ -16,24 +15,36 @@ body {
   }
   
   #root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     height: inherit;
   }
   
+  @media screen and (min-width: 700px) {
+    #root {
+      background-color: rgba(182, 182, 182, 0.616);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }    
+    #root > main {
+      width: 80%;
+    }
+  }
+  
+  #root > main {
+    height: 92.15%;
+    background-color: white;
+  }
+  
+  #header-component {
+    width: 100%;
+  }
+
   code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-/** SPECIFIC STYLES **/
-
-#register-container {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-}
-
 
 
 /** UTILITY STYLES **/

@@ -3,6 +3,7 @@ import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { useNavigate } from "react-router-dom";
 import { register } from "../../modules/authManager";
 import { isDuplicateUserData } from "../../modules/userProfileManager";
+import logo from "../../assets/images/NutriHelp_logo.png"
 
 export default function Register() {
   const navigate = useNavigate(),
@@ -63,7 +64,9 @@ export default function Register() {
 
   return (
     <section id="register-container">
+      <img className="logo-background" src={logo} alt="Logo" />
       <div id="register-box">
+        <h1>Register</h1>
         {
           editingCredentials ?
             <Form onSubmit={validateCredentials}>

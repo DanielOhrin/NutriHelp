@@ -1,0 +1,54 @@
+#register-container {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: flex-end;
+  width: auto;
+}
+
+#register-box {
+  margin-right: 15rem;
+  border: 1px solid black;
+  border-radius: 1rem;
+  padding: 1rem 2rem 1rem 2rem;
+  box-shadow: 1px 1px;
+}
+
+.logo-background { 
+  margin-left: 5rem;
+  align-self: flex-start;
+  position: absolute;
+  max-width: 750px;
+}
+
+@media screen and (max-width: 1725px) {
+  .logo-background {
+    width: 35%;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .logo-background {
+    width: 25%;
+  }
+}
+
+@media screen and (max-width: 1150px) {
+  #register-box {
+    align-self: center;
+    margin-right: 0;
+  } 
+  
+  .logo-background {
+    position: relative;
+    align-self: center;
+    margin-right: 5rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .logo-background {
+    width: 150px;
+  }
+}
