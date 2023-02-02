@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../modules/authManager";
@@ -18,8 +18,8 @@ export default function Register() {
       lastName: "",
       gender: "",
       birthDate: "",
-      weight: 0,
-      height: 0,
+      weight: 80,
+      height: 36,
       activityLevel: 0,
       weightGoal: 0
     }),
@@ -35,7 +35,7 @@ export default function Register() {
     emailTimeout = useRef(null),
     nextBtnToggle = useRef(null)
 
-  // Stores DOM elemenmts for easy access
+  // Stores DOM elements for easy access
   useEffect(() => {
     setEmailWarning(document.getElementById("register-email-validation"))
     setUsernameWarning(document.getElementById("register-username-validation"))
@@ -44,6 +44,7 @@ export default function Register() {
     return () => {
       clearTimeout(usernameTimeout)
       clearTimeout(emailTimeout)
+      clearTimeout(nextBtnToggle)
     }
   }, [])
 
@@ -126,6 +127,18 @@ export default function Register() {
     }, 1250)
   }, [nextBtn, usernameWarning, emailWarning, credentials])
 
+  useEffect(() => {
+    const submitBtn = document.getElementById("register-submit-btn")
+
+    if (!editingCredentials && submitBtn && submitBtn.disabled === false) {
+      submitBtn.disabled = true
+    }
+
+    if (!Object.values(profile).includes("") && !Object.values(profile).includes(0)) {
+      submitBtn.disabled = false
+    }
+  }, [editingCredentials, profile])
+
   const changeState = (e) => {
     if (Object.keys(credentials).includes(e.target.name)) {
       const copy = { ...credentials }
@@ -143,6 +156,24 @@ export default function Register() {
 
       setProfile(copy)
     }
+  }
+
+  const submitRegistration = (e) => {
+    e.preventDefault()
+
+    // Object for database
+    const userObj = {
+      ...profile,
+      ...credentials,
+    }
+    userObj.height = Math.ceil(userObj.height *= 2.54) // Converts from inches to centimeters
+    userObj.weight = Math.ceil(userObj.weight *= 0.453592) // Converts from lbs. to kg.
+    delete userObj.password
+    delete userObj.confirmPassword
+
+    //! Implement register here!!!!!
+    register(userObj, credentials.password)
+      .then(res => res.ok ? navigate("/") : window.location.reload())
   }
 
   return (
@@ -213,7 +244,7 @@ export default function Register() {
                 </FormGroup>
               </fieldset>
             </Form>
-            : <Form>
+            : <Form onSubmit={submitRegistration}>
               <fieldset>
                 <FormGroup>
                   <Label htmlFor="firstName">First Name</Label>
@@ -251,28 +282,33 @@ export default function Register() {
                     className="register-input"
                     name="birthDate"
                     type="date"
+                    max={(new Date(new Date() - 18 * 365 * 24 * 60 * 60 * 1000)).toISOString().split("T")[0]}
                     value={profile.birthDate}
                     onChange={changeState}
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="weight">Weight (lbs.)(Change to include calculations)</Label>
+                  <Label htmlFor="weight">Weight (lbs.)</Label>
                   <Input
                     className="register-input"
                     name="weight"
                     type="number"
+                    min={80}
+                    max={700}
                     value={profile.weight}
-                    onChange={changeState}
+                    onChange={(e) => { if (e.target.value.trim() !== "" && parseInt(e.target.value) >= 80) changeState(e) }}
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="height">Height (in.)(Change to include calculations)</Label>
+                  <Label htmlFor="height">Height (in.)</Label>
                   <Input
                     className="register-input"
                     name="height"
                     type="number"
+                    min={36}
+                    max={80}
                     value={profile.height}
-                    onChange={changeState}
+                    onChange={(e) => { if (e.target.value.trim() !== "" && parseInt(e.target.value) >= 36) changeState(e) }}
                   />
                 </FormGroup>
                 <FormGroup>
@@ -297,7 +333,7 @@ export default function Register() {
                 </FormGroup>
                 <FormGroup>
                   <Button onClick={(e) => { clearTimeout(); navigate("/login") }}>Cancel</Button>
-                  <Button className="mx-4">Register</Button>
+                  <Button id="register-submit-btn" className="mx-4">Register</Button>
                 </FormGroup>
               </fieldset>
             </Form >

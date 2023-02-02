@@ -10,7 +10,6 @@ namespace NutriHelp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserProfileController : ControllerBase
     {
         private readonly IUserProfileRepository _userProfileRepository;
@@ -20,6 +19,7 @@ namespace NutriHelp.Controllers
         }
 
         //! GET: api/UserProfile/DoesUserExist/:id
+        [Authorize]
         [HttpGet("DoesUserExist/{firebaseUserId}")]
         public IActionResult DoesUserExist([FromRoute] string firebaseUserId)
         {
@@ -33,6 +33,7 @@ namespace NutriHelp.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpGet("UserType/{firebaseUserId}")]
         public IActionResult GetUserType([FromRoute] string firebaseUserId)
         {
