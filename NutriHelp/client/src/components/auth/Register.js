@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../modules/authManager";
 import { isDuplicateUserData } from "../../modules/userProfileManager";
 import logo from "../../assets/images/company_logo.png"
@@ -8,12 +8,12 @@ import logo from "../../assets/images/company_logo.png"
 export default function Register() {
   const navigate = useNavigate(),
     [credentials, setCredentials] = useState({
+      username: "",
       email: "",
       password: "",
       confirmPassword: ""
     }),
     [profile, setProfile] = useState({
-      username: "",
       firstName: "",
       lastName: "",
       gender: "",
@@ -34,11 +34,81 @@ export default function Register() {
   const usernameTimeout = useRef(null),
     emailTimeout = useRef(null)
 
+  // Stores DOM elemenmts for easy access
   useEffect(() => {
     setEmailWarning(document.getElementById("register-email-validation"))
     setUsernameWarning(document.getElementById("register-username-validation"))
     setNextBtn(document.getElementById("register-next-btn"))
   }, [])
+
+  // Disables next button by default
+  useEffect(() => {
+    if (nextBtn !== null) nextBtn.disabled = true;
+  }, [nextBtn])
+
+  // Debouncing for email
+  useEffect(() => {
+    if (emailTimeout.current === null && credentials.email.trim() === "") return;
+
+    clearTimeout(emailTimeout.current)
+
+    if (credentials.email.trim() === "") {
+      emailWarning.style.display = "none"
+      return
+    }
+
+    emailTimeout.current = setTimeout(() => {
+      isDuplicateUserData("email", credentials.email)
+        .then(bool => {
+          if (bool) {
+            emailWarning.style.display = "inline"
+          } else {
+            emailWarning.style.display = "none"
+          }
+          setEmailWarning(document.getElementById("register-email-validation"))
+        })
+    }, 1000)
+  }, [credentials.email, emailWarning])
+
+  // Debouncing for username
+  useEffect(() => {
+    if (emailTimeout.current === null && credentials.username.trim() === "") return;
+
+    clearTimeout(usernameTimeout.current)
+
+    if (credentials.username.trim() === "") {
+      usernameWarning.style.display = "none"
+      return
+    }
+
+    usernameTimeout.current = setTimeout(() => {
+
+      isDuplicateUserData("username", credentials.username)
+        .then(bool => {
+          if (bool) {
+            usernameWarning.style.display = "inline"
+          } else {
+            usernameWarning.style.display = "none"
+          }
+          setUsernameWarning(document.getElementById("register-username-validation"))
+        })
+    }, 1000)
+
+
+  }, [credentials.username, usernameWarning])
+
+  useEffect(() => {
+    if (nextBtn !== null) {
+      if (usernameWarning.style.display === "none"
+        && emailWarning.style.display === "none"
+        && !Object.values(credentials).includes("")
+        && credentials.password === credentials.confirmPassword) {
+        nextBtn.disabled = false;
+      } else {
+        nextBtn.disabled = true;
+      }
+    }
+  }, [nextBtn, usernameWarning, emailWarning, credentials])
 
   const changeState = (e) => {
     if (Object.keys(credentials).includes(e.target.name)) {
@@ -59,50 +129,11 @@ export default function Register() {
     }
   }
 
-  useEffect(() => {
-    clearTimeout(emailTimeout.current)
-
-    emailTimeout.current = setTimeout(() => {
-      if (credentials.email === "") return;
-      isDuplicateUserData("email", credentials.email)
-        .then(bool => {
-          if (bool) {
-            emailWarning.style.display = "inline"
-          } else {
-            emailWarning.style.display = "none"
-          }
-          setEmailWarning(document.getElementById("register-email-validation"))
-        })
-    }, 2000)
-  }, [credentials.email, emailWarning])
-
-  useEffect(() => {
-    clearTimeout(usernameTimeout.current)
-
-    usernameTimeout.current = setTimeout(() => {
-      if (profile.username === "") return;
-
-      isDuplicateUserData("username", profile.username)
-        .then(bool => {
-          if (bool) {
-            usernameWarning.style.display = "inline"
-          } else {
-            usernameWarning.style.display = "none"
-          }
-          setUsernameWarning(document.getElementById("register-username-validation"))
-        })
-    }, 2000)
-
-
-  }, [profile.username, usernameWarning])
-
   const validateCredentials = (e) => {
     e.preventDefault()
 
-    if (true) {
+    if (credentials.username.trim().length >= 5) {
       setEditingCredentials(!editingCredentials)
-    } else {
-
     }
   }
 
@@ -122,10 +153,12 @@ export default function Register() {
                     className="register-input"
                     name="username"
                     type="text"
-                    value={profile.username}
+                    value={credentials.username}
                     maxLength={15}
                     onChange={changeState}
                   />
+                  <FormText>Mininum Length: 5</FormText>
+                  <br />
                   <FormText color="danger" id="register-username-validation" className="hidden">An account with that username already exists.</FormText>
                 </FormGroup>
                 <FormGroup>
@@ -165,8 +198,10 @@ export default function Register() {
                   <FormText color="danger" className={(credentials.password === credentials.confirmPassword ? "hidden" : "")}>Passwords do not match.</FormText>
                 </FormGroup>
                 <FormGroup>
-                  <Button id="register-next-btn" className="mx-2">Next</Button>
-                  <FormText>Already have an account?</FormText>
+                  <Button id="register-next-btn">Next</Button>
+                  <FormText className="ml-4">
+                    <Link to="/login">Already have an account?</Link>
+                  </FormText>
                 </FormGroup>
               </fieldset>
             </Form>

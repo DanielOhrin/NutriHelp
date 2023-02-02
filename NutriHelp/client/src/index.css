@@ -52,6 +52,23 @@ body {
   font-size: 2rem;
 }
 
+.ml-2 {
+  margin-left: 2px;
+}
+
+.ml-4 {
+  margin-left: 4px;
+}
+
+.mr-2 {
+  margin-right: 2px;
+}
+
+.mr-4 {
+  margin-right: 4px;
+}
+
+
 .nav-item {
   margin: 0 1rem;
 }
