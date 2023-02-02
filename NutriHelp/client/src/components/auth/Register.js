@@ -32,16 +32,22 @@ export default function Register() {
 
   // Variables for debouncing
   const usernameTimeout = useRef(null),
-    emailTimeout = useRef(null)
+    emailTimeout = useRef(null),
+    nextBtnToggle = useRef(null)
 
   // Stores DOM elemenmts for easy access
   useEffect(() => {
     setEmailWarning(document.getElementById("register-email-validation"))
     setUsernameWarning(document.getElementById("register-username-validation"))
     setNextBtn(document.getElementById("register-next-btn"))
+
+    return () => {
+      clearTimeout(usernameTimeout)
+      clearTimeout(emailTimeout)
+    }
   }, [])
 
-  // Disables next button by default
+  // Disables "next" button by default
   useEffect(() => {
     if (nextBtn !== null) nextBtn.disabled = true;
   }, [nextBtn])
@@ -65,8 +71,8 @@ export default function Register() {
           } else {
             emailWarning.style.display = "none"
           }
-          setEmailWarning(document.getElementById("register-email-validation"))
         })
+      emailTimeout.current = null
     }, 1000)
   }, [credentials.email, emailWarning])
 
@@ -90,24 +96,34 @@ export default function Register() {
           } else {
             usernameWarning.style.display = "none"
           }
-          setUsernameWarning(document.getElementById("register-username-validation"))
         })
+      usernameTimeout.current = null
     }, 1000)
 
 
   }, [credentials.username, usernameWarning])
 
+  // Conditionals for allowing user to continue the form
+  //! Note: I did not add any validation for email other than checking for duplicates.
   useEffect(() => {
-    if (nextBtn !== null) {
-      if (usernameWarning.style.display === "none"
-        && emailWarning.style.display === "none"
-        && !Object.values(credentials).includes("")
-        && credentials.password === credentials.confirmPassword) {
-        nextBtn.disabled = false;
-      } else {
-        nextBtn.disabled = true;
+    clearTimeout(nextBtnToggle.current)
+
+    nextBtnToggle.current = setTimeout(() => {
+      if (nextBtn !== null) {
+        if (
+          usernameTimeout.current === null
+          && emailTimeout.current === null
+          && usernameWarning.style.display === "none"
+          && emailWarning.style.display === "none"
+          && !Object.values(credentials).includes("")
+          && credentials.username.trim().length >= 5
+          && credentials.password === credentials.confirmPassword) {
+          nextBtn.disabled = false;
+        } else {
+          nextBtn.disabled = true;
+        }
       }
-    }
+    }, 1250)
   }, [nextBtn, usernameWarning, emailWarning, credentials])
 
   const changeState = (e) => {
@@ -129,14 +145,6 @@ export default function Register() {
     }
   }
 
-  const validateCredentials = (e) => {
-    e.preventDefault()
-
-    if (credentials.username.trim().length >= 5) {
-      setEditingCredentials(!editingCredentials)
-    }
-  }
-
   return (
     <section id="register-container">
       <img className="logo-background" src={logo} alt="Logo" />
@@ -144,7 +152,7 @@ export default function Register() {
         <h1>Register</h1>
         {
           editingCredentials ?
-            <Form onSubmit={validateCredentials}>
+            <Form onSubmit={e => { e.preventDefault(); setEditingCredentials(!editingCredentials) }}>
               <fieldset>
                 <FormGroup>
                   <Label htmlFor="username">Username</Label>
