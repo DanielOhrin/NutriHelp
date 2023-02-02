@@ -34,11 +34,11 @@ CREATE TABLE [UserProfile] (
   [BirthDate] datetime NOT NULL,
   [Weight] int NOT NULL,
   [Height] int NOT NULL,
-  [ActivityLevel] float NOT NULL, /* 1.2, 1.3, 1.4 */
+  [ActivityLevel] decimal NOT NULL, /* 1.2, 1.3, 1.4 */
   [WeightGoal] int NOT NULL,
   [DateCreated] datetime NOT NULL,
   [IsActive] bit NOT NULL DEFAULT (1),
-  [UserTypeId] int NOT NULL,
+  [UserTypeId] int NOT NULL DEFAULT(2),
   [CalorieDiff] AS ( /* Determined by their goals (lose or gain 1/2 lbs. per week */
   CASE 
 	WHEN [WeightGoal] = 1 THEN -1000 /* Lose 2 lbs./week */

@@ -52,5 +52,13 @@ namespace NutriHelp.Controllers
         {
             return Ok(_userProfileRepository.IsDuplicate(field, value));
         }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult Register([FromBody] UserProfile userProfile)
+        {
+            _userProfileRepository.Register(userProfile);
+            return CreatedAtAction("GET", new { userProfile.Id }, userProfile);
+        }
     }
 } 

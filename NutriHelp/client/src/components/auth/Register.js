@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { Link, useNavigate } from "react-router-dom";
-import { register } from "../../modules/authManager";
+import { logout, register } from "../../modules/authManager";
 import { isDuplicateUserData } from "../../modules/userProfileManager";
 import logo from "../../assets/images/company_logo.png"
 
@@ -173,7 +173,14 @@ export default function Register() {
 
     //! Implement register here!!!!!
     register(userObj, credentials.password)
-      .then(res => res.ok ? navigate("/") : window.location.reload())
+      .then(res => {
+        if (res.ok) {
+          setTimeout(() => {navigate("/")}, 500)
+        } else {
+          logout()
+          window.location.reload()
+        }
+      })
   }
 
   return (

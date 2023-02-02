@@ -7,5 +7,6 @@ namespace NutriHelp.Repositories
         bool DoesUserExist(string firebaseUserId);
         UserType GetUserType(string firebaseUserId);
         bool IsDuplicate(string field, string value);
+        void Register(UserProfile userProfile);
     }
 }
