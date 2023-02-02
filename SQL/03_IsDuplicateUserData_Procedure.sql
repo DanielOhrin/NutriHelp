@@ -1,22 +1,21 @@
+use [NutriHelp]
+GO
+
 DROP PROCEDURE IF EXISTS IsDuplicateUserData;
 GO
 
 CREATE PROCEDURE IsDuplicateUserData @Field nvarchar(15), @Value nvarchar(50)
 AS
 
-DECLARE @result INT;
-
-SET @result = (SELECT COUNT(Id)
-FROM dbo.UserProfile
-WHERE @Field = @Value);
-
-IF @result > 0
+IF @Field = 'Email'
 BEGIN
-	SET @result = 1;
+	SELECT COUNT(Id)
+	FROM dbo.UserProfile
+	WHERE Email = @Value
 END
-ELSE
+ELSE IF @Field = 'UserName'
 BEGIN
-	SET @result = 0;
+	SELECT COUNT(Id)
+	FROM dbo.UserProfile
+	WHERE Email = @Value
 END
-
-RETURN @result;

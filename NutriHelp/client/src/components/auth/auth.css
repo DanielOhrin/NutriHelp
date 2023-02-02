@@ -1,14 +1,14 @@
 #register-container {
   height: 100%;
   display: flex;
-  flex-flow: column nowrap;
+  flex-wrap: nowrap;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   width: auto;
 }
 
 #register-box {
-  margin-right: 22.5rem;
+  margin-left: 2.5rem;
   border: 1px solid black;
   border-radius: 1rem;
   padding: 1rem 2rem 1rem 2rem;
@@ -16,34 +16,26 @@
 }
 
 .logo-background { 
-  margin-left: 22.5rem;
-  align-self: flex-start;
-  position: absolute;
+  margin-right: 2.5rem;
   min-width: 150px;
   max-width: 400px;
 }
 
-@media screen and (max-width: 1800px) {
-  .logo-background {
-    width: 20%;
-  }
+.register-input {
+    width: auto !important;
 }
 
-@media screen and (max-width: 1720px) {
-  .logo-background {
-    width: 15%;
-  }
-}
-
-@media screen and (max-width: 1580px) {
-  #register-box {
-    align-self: center;
-    margin-right: 0;
+@media screen and (max-width: 1100px) {
+  #register-container {
+    flex-direction: column;
   } 
   
+  #register-box {
+    margin: 0;
+  }
+
   .logo-background {
-    position: relative;
-    align-self: center;
-    margin-left: 0;
+    width: 15%;
+    margin: 0;
   }
 }
