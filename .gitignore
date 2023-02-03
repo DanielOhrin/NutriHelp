@@ -6,6 +6,9 @@
 # Sensitive
 appsettings.Local.json
 
+# Misc
+Old_Assets
+
 # User-specific files
 *.rsuser
 *.suo

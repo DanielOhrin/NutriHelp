@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../modules/authManager";
+import logo from "../../assets/images/company_logo.png"
+import "./auth.css"
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,32 +19,46 @@ export default function Login() {
   };
 
   return (
-    <Form onSubmit={loginSubmit}>
-      <fieldset>
-        <FormGroup>
-          <Label for="email">Email</Label>
-          <Input
-            id="email"
-            type="text"
-            autoFocus
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Button>Login</Button>
-        </FormGroup>
-        <em>
-          Not registered? <Link to="register">Register</Link>
-        </em>
-      </fieldset>
-    </Form>
+    <>
+      <div className="text-center mt-4">
+        <h1>Welcome to NutriHelp!</h1>
+        <h3>The hottest app for tracking your health!</h3>
+      </div>
+      <section id="login-container">
+        <img className="logo-background" src={logo} alt="Logo" />
+        <div id="login-box-container">
+          <div id="login-box">
+            <h1>Login</h1>
+            <Form onSubmit={loginSubmit}>
+              <fieldset>
+                <FormGroup>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    autoComplete="email"
+                    name="email"
+                    type="text"
+                    autoFocus
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    autoComplete="current-password"
+                    name="password"
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Button>Login</Button>
+                  <Link className="ml-4" to="/register">Need an account?</Link>
+                </FormGroup>
+              </fieldset>
+            </Form>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

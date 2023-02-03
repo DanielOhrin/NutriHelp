@@ -23,7 +23,7 @@ export default function Header({ isLoggedIn, role }) {
   }, [isLoggedIn])
 
   return (
-    <div>
+    <div id="header-component">
       <Navbar className="px-3" color="success" dark expand="md">
         <NavbarBrand id="nav-brand" tag={RRNavLink} to="/">NutriHelp</NavbarBrand>
         <NavbarToggler onClick={toggle} />

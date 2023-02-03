@@ -14,7 +14,6 @@ const _doesUserExist = (firebaseUserId) => {
 };
 
 const _saveUser = (userProfile) => {
-  throw new Error("Not Implemented")
   return getToken().then((token) =>
     fetch(_apiUrl, {
       method: "POST",
@@ -23,7 +22,7 @@ const _saveUser = (userProfile) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(userProfile)
-    }).then(resp => resp.json()));
+    }));
 };
 
 export const getRole = (firebaseUserId) => {
@@ -67,7 +66,7 @@ export const register = (userProfile, password) => {
   return firebase.auth().createUserWithEmailAndPassword(userProfile.email, password)
     .then((createResponse) => _saveUser({
       ...userProfile,
-      firebaseUserId: createResponse.user.uid
+      firebaseId: createResponse.user.uid
     }));
 };
 

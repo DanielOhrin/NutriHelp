@@ -10,7 +10,6 @@ namespace NutriHelp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserProfileController : ControllerBase
     {
         private readonly IUserProfileRepository _userProfileRepository;
@@ -20,6 +19,7 @@ namespace NutriHelp.Controllers
         }
 
         //! GET: api/UserProfile/DoesUserExist/:id
+        [Authorize]
         [HttpGet("DoesUserExist/{firebaseUserId}")]
         public IActionResult DoesUserExist([FromRoute] string firebaseUserId)
         {
@@ -33,11 +33,12 @@ namespace NutriHelp.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpGet("UserType/{firebaseUserId}")]
         public IActionResult GetUserType([FromRoute] string firebaseUserId)
         {
             UserType userType = _userProfileRepository.GetUserType(firebaseUserId);
-            
+
             if (userType == null)
             {
                 return BadRequest();
@@ -45,5 +46,33 @@ namespace NutriHelp.Controllers
 
             return Ok(userType);
         }
+
+        [HttpGet("isDuplicateData")]
+        public IActionResult IsDuplicateData([FromQuery] string field, [FromQuery] string value)
+        {
+            return Ok(_userProfileRepository.IsDuplicate(field, value));
+        }
+
+        [Authorize]
+        [HttpGet("{firebaseUserId}")]
+        public IActionResult Get(string firebaseUserId)
+        {
+            UserProfile userProfile = _userProfileRepository.GetByFirebaseId(firebaseUserId);
+
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userProfile);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult Register([FromBody] UserProfile userProfile)
+        {
+            _userProfileRepository.Register(userProfile);
+            return CreatedAtAction("Get", new { firebaseUserId = userProfile.FirebaseId }, userProfile);
+        }
     }
-}
+} 
