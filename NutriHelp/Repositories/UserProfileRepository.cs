@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Reflection;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -79,7 +80,7 @@ namespace NutriHelp.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "IsDuplicateUserData";
+                    cmd.CommandText = "dbo.IsDuplicateUserData";
 
                     DbUtils.AddParameter(cmd, "@Field", field);
                     DbUtils.AddParameter(cmd, "@Value", value);
@@ -119,6 +120,69 @@ namespace NutriHelp.Repositories
                     userProfile.Id = (int)cmd.ExecuteScalar();
                 }
             }
+        }
+
+        public UserProfile GetByFirebaseId(string firebaseUserId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @$"
+                        SELECT {SelectUserProfile(null)}
+                        FROM dbo.UserProfile
+                        WHERE FirebaseId = @FirebaseId   
+                    ";
+
+                    DbUtils.AddParameter(cmd, "@FirebaseId", firebaseUserId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        UserProfile userProfile = null;
+
+                        if (reader.Read())
+                        {
+                            userProfile = ConstructUserProfile(reader);
+                        }
+
+                        return userProfile;
+                    }
+                }
+            }
+        }
+
+        private string SelectUserProfile(string alias)
+        {
+            if (alias != null)
+            {
+                return string.Format("{0}.Id, {0}.FirebaseId, {0}.Email, {0}.Username, {0}.FirstName, {0}.LastName, {0}.Gender, {0}.BirthDate, {0}.Weight, {0}.Height, {0}.ActivityLevel, {0}.WeightGoal, {0}.DateCreated", alias);
+            }
+            else
+            {
+                return "Id, FirebaseId, Email, Username, FirstName, LastName, Gender, BirthDate, Weight, Height, ActivityLevel, WeightGoal, DateCreated";
+            }
+        }
+
+        private UserProfile ConstructUserProfile(SqlDataReader reader)
+        {
+            return new UserProfile
+            {
+                Id = DbUtils.GetInt(reader, "Id"),
+                FirebaseId = DbUtils.GetString(reader, "FirebaseId"),
+                Email = DbUtils.GetString(reader, "Email"),
+                Username = DbUtils.GetString(reader, "Username"),
+                FirstName = DbUtils.GetString(reader, "FirstName"),
+                LastName = DbUtils.GetString(reader, "LastName"),
+                Gender = DbUtils.GetChar(reader, "Gender"),
+                BirthDate = DbUtils.GetDateTime(reader, "BirthDate"),
+                Weight = DbUtils.GetInt(reader, "Weight"),
+                Height = DbUtils.GetInt(reader, "Height"),
+                ActivityLevel = DbUtils.GetDecimal(reader, "ActivityLevel"),
+                WeightGoal = DbUtils.GetInt(reader, "WeightGoal"),
+                DateCreated = DbUtils.GetDateTime(reader, "DateCreated")
+            };
         }
     }
 }

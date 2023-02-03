@@ -30,7 +30,7 @@ CREATE TABLE [UserProfile] (
   [Username] nvarchar(15) UNIQUE NOT NULL,
   [FirstName] nvarchar(25) NOT NULL,
   [LastName] nvarchar(25) NOT NULL,
-  [Gender] nvarchar(1) NOT NULL,
+  [Gender] char NOT NULL,
   [BirthDate] datetime NOT NULL,
   [Weight] int NOT NULL,
   [Height] int NOT NULL,

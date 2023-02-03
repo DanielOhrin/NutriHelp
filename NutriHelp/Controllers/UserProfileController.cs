@@ -54,11 +54,25 @@ namespace NutriHelp.Controllers
         }
 
         [Authorize]
+        [HttpGet("{firebaseUserId}")]
+        public IActionResult Get(string firebaseUserId)
+        {
+            UserProfile userProfile = _userProfileRepository.GetByFirebaseId(firebaseUserId);
+
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userProfile);
+        }
+
+        [Authorize]
         [HttpPost]
         public IActionResult Register([FromBody] UserProfile userProfile)
         {
             _userProfileRepository.Register(userProfile);
-            return CreatedAtAction("GET", new { userProfile.Id }, userProfile);
+            return CreatedAtAction("Get", new { firebaseUserId = userProfile.FirebaseId }, userProfile);
         }
     }
 } 

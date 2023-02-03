@@ -13,9 +13,9 @@ BEGIN
 	FROM dbo.UserProfile
 	WHERE Email = @Value
 END
-ELSE IF @Field = 'UserName'
+ELSE IF @Field = 'Username'
 BEGIN
 	SELECT COUNT(Id)
 	FROM dbo.UserProfile
-	WHERE Email = @Value
+	WHERE Username = @Value
 END

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 
 using Microsoft.Data.SqlClient;
 
@@ -38,6 +39,21 @@ namespace NutriHelp.Utils
             }
 
             return reader.GetInt32(ordinal);
+        }
+
+        public static char GetChar(SqlDataReader reader, string column)
+        {
+            return reader.GetChar(reader.GetOrdinal(column));
+        }
+
+        public static DateTime GetDateTime(SqlDataReader reader, string column)
+        {
+            return reader.GetDateTime(reader.GetOrdinal(column));
+        }
+
+        public static decimal GetDecimal(SqlDataReader reader, string column)
+        {
+            return reader.GetDecimal(reader.GetOrdinal(column));
         }
 
         public static void AddParameter(SqlCommand cmd, string parameterName, object value)

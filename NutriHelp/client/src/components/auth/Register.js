@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, FormText, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import { Link, useNavigate } from "react-router-dom";
 import { logout, register } from "../../modules/authManager";
 import { isDuplicateUserData } from "../../modules/userProfileManager";
@@ -23,7 +23,8 @@ export default function Register() {
       activityLevel: 0,
       weightGoal: 0
     }),
-    [editingCredentials, setEditingCredentials] = useState(true)
+    [editingCredentials, setEditingCredentials] = useState(true),
+    [modal, setModal] = useState(false)
 
   // Validation variables
   const [emailWarning, setEmailWarning] = useState(null),
@@ -160,6 +161,8 @@ export default function Register() {
 
   const submitRegistration = (e) => {
     e.preventDefault()
+    document.getElementById("register-submit-btn").disabled = true
+    document.getElementById("register-cancel-btn").disabled = true
 
     // Object for database
     const userObj = {
@@ -175,7 +178,7 @@ export default function Register() {
     register(userObj, credentials.password)
       .then(res => {
         if (res.ok) {
-          setTimeout(() => {navigate("/")}, 500)
+          setTimeout(() => navigate("/"), 250)
         } else {
           logout()
           window.location.reload()
@@ -339,12 +342,20 @@ export default function Register() {
                   </select>
                 </FormGroup>
                 <FormGroup>
-                  <Button onClick={(e) => { clearTimeout(); navigate("/login") }}>Cancel</Button>
+                  <Button type="button" id="register-cancel-btn" onClick={() => { setModal(!modal) }}>Cancel</Button>
                   <Button id="register-submit-btn" className="mx-4">Register</Button>
                 </FormGroup>
               </fieldset>
             </Form >
         }
+        <Modal isOpen={modal} toggle={() => setModal(!modal)}>
+          <ModalHeader toggle={() => setModal(!modal)}>Confirm</ModalHeader>
+          <ModalBody>Are you sure you want to cancel? You will lose all progress.</ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={() => setModal(!modal)}>Cancel</Button>
+            <Button color="primary" onClick={() => { clearTimeout(); navigate("/login") }}>Confirm</Button>
+          </ModalFooter>
+        </Modal>
       </div>
     </section>
   );

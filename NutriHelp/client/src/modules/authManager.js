@@ -22,7 +22,7 @@ const _saveUser = (userProfile) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(userProfile)
-    }).then(resp => resp.json()));
+    }));
 };
 
 export const getRole = (firebaseUserId) => {
