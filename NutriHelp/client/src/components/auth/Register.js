@@ -189,7 +189,7 @@ export default function Register() {
   return (
     <section id="register-container">
       <img className="logo-background" src={logo} alt="Logo" />
-      <div id="register-box">
+      <div id={editingCredentials ? "register-box" : "register-2-box"}>
         <h1>Register</h1>
         {
           editingCredentials ?
@@ -254,11 +254,12 @@ export default function Register() {
                 </FormGroup>
               </fieldset>
             </Form>
-            : <Form onSubmit={submitRegistration}>
+            : <Form id="register-form-2" onSubmit={submitRegistration}>
               <fieldset>
                 <FormGroup>
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
+                    autoComplete="first-name"
                     className="register-input"
                     name="firstName"
                     type="text"
@@ -270,6 +271,7 @@ export default function Register() {
                 <FormGroup>
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input
+                    autoComplete="last-name"
                     className="register-input"
                     name="lastName"
                     type="text"

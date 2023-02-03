@@ -68,6 +68,9 @@ body {
   margin-right: 4px;
 }
 
+.w-full {
+  width: 50%;
+}
 
 .nav-item {
   margin: 0 1rem;
@@ -89,7 +92,7 @@ body {
   height: 100%;
 }
 
-.d-flex {
+.flex {
   display: flex;
 }
 

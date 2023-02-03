@@ -1,4 +1,4 @@
-#register-container {
+#register-container, #login-container {
   height: 100%;
   display: flex;
   flex-wrap: nowrap;
@@ -7,12 +7,23 @@
   width: auto;
 }
 
-#register-box {
+#login-container {
+  margin-top: 5rem;
+  align-items: flex-start;
+}
+
+#register-box, #register-2-box, #login-box {
   margin-left: 2.5rem;
   border: 1px solid black;
   border-radius: 1rem;
   padding: 1rem 2rem 1rem 2rem;
   box-shadow: 1px 1px;
+}
+
+#login-box-container {
+  display: flex;
+  align-items: center;
+  min-height: 450px;
 }
 
 .logo-background { 
@@ -26,16 +37,32 @@
 }
 
 @media screen and (max-width: 1100px) {
-  #register-container {
+  #register-container, #login-container {
     flex-direction: column;
   } 
-  
-  #register-box {
-    margin: 0;
+
+  #login-box-container {
+    min-height: fit-content;
   }
 
+  #login-container {
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
+  #register-box, #login-box {
+    margin: 0;
+  }
+  
   .logo-background {
     width: 15%;
     margin: 0;
   }
 }
+
+@media screen and (max-width: 2130px) {
+  #register-2-box {
+    max-height: 75%;
+    overflow: auto;
+  }
+} 
