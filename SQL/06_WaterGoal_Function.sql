@@ -1,0 +1,16 @@
+use [NutriHelp]
+GO
+
+DROP FUNCTION IF EXISTS dbo.WaterGoal
+GO
+
+CREATE FUNCTION dbo.WaterGoal(@Weight INT)
+RETURNS INT
+AS
+
+BEGIN
+	DECLARE @Dec1 DECIMAL(18, 4) = 0.033
+	DECLARE @Dec2 DECIMAL(18, 4) = 33.814
+
+	RETURN ROUND(@Weight * @Dec1 * @Dec2, 0, 0)
+END
