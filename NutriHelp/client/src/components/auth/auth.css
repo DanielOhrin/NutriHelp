@@ -1,5 +1,5 @@
 #register-container, #login-container {
-  height: 100%;
+  height: 80%;
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
@@ -50,7 +50,7 @@
     align-items: center;
   }
   
-  #register-box, #login-box {
+  #register-box, #register-2-box, #login-box {
     margin: 0;
   }
   
