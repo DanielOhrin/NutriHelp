@@ -1,10 +1,10 @@
 use [NutriHelp]
 GO
 
-DROP PROCEDURE IF EXISTS IsDuplicateUserData;
+DROP PROCEDURE IF EXISTS dbo.IsDuplicateUserData;
 GO
 
-CREATE PROCEDURE IsDuplicateUserData @Field nvarchar(15), @Value nvarchar(50)
+CREATE PROCEDURE dbo.IsDuplicateUserData @Field nvarchar(15), @Value nvarchar(50)
 AS
 
 IF @Field = 'Email'
