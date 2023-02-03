@@ -25,7 +25,7 @@ export default function Login() {
         <h3>The hottest app for tracking your health!</h3>
       </div>
       <section id="login-container">
-        <img className="logo-background" src={logo} alt="Logo" />
+        <img className="auth-logo" src={logo} alt="Logo" />
         <div id="login-box-container">
           <div id="login-box">
             <h1>Login</h1>

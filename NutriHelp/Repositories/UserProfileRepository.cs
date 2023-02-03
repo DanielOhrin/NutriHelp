@@ -179,7 +179,7 @@ namespace NutriHelp.Repositories
                 BirthDate = DbUtils.GetDateTime(reader, "BirthDate"),
                 Weight = DbUtils.GetInt(reader, "Weight"),
                 Height = DbUtils.GetInt(reader, "Height"),
-                ActivityLevel = DbUtils.GetDecimal(reader, "ActivityLevel"),
+                ActivityLevel = DbUtils.GetInt(reader, "ActivityLevel"),
                 WeightGoal = DbUtils.GetInt(reader, "WeightGoal"),
                 DateCreated = DbUtils.GetDateTime(reader, "DateCreated")
             };

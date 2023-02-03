@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
+import Home from "./user/Home";
 
 export default function ApplicationViews({ isLoggedIn, role }) {
   return (
@@ -10,7 +11,7 @@ export default function ApplicationViews({ isLoggedIn, role }) {
         <Route path="/">
           <Route
             index
-            element={isLoggedIn ? <>Make Home Page!</> : <Navigate to="/login" />}
+            element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
           />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
