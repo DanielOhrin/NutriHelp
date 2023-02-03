@@ -148,16 +148,11 @@ export default function Register() {
       setCredentials(copy)
     } else {
       const copy = { ...profile }
-
-      if (e.target.name === "activityLevel") {
-        copy.activityLevel = parseFloat(e.target.value)
-      } else {
-        copy[e.target.name] = isNaN(e.target.value) || e.target.value === "" ? e.target.value : parseInt(e.target.value)
-      }
-
+      copy[e.target.name] = isNaN(e.target.value) || e.target.value === "" ? e.target.value : parseInt(e.target.value)
       setProfile(copy)
     }
   }
+
 
   const submitRegistration = (e) => {
     e.preventDefault()
@@ -327,9 +322,10 @@ export default function Register() {
                   <Label htmlFor="activityLevel">Activity Level</Label>
                   <select className="form-control register-input" name="activityLevel" onChange={changeState}>
                     <option value="" hidden>Select Level</option>
-                    <option value="1.2">Sedentary</option>
-                    <option value="1.3">Light/Average Exercise</option>
-                    <option value="1.4">Extreme Exercise</option>
+                    <option value="1">Sedentary</option>
+                    <option value="2">Light/Average Exercise</option>
+                    <option value="3">Above Average Exercise</option>
+                    <option value="4">Extreme Exercise</option>
                   </select>
                 </FormGroup>
                 <FormGroup>

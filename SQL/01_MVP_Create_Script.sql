@@ -34,7 +34,7 @@ CREATE TABLE [UserProfile] (
   [BirthDate] datetime NOT NULL,
   [Weight] int NOT NULL,
   [Height] int NOT NULL,
-  [ActivityLevel] decimal NOT NULL, /* 1.2, 1.3, 1.4 */
+  [ActivityLevel] int NOT NULL, /* 1, 2, 3, 4 */
   [WeightGoal] int NOT NULL,
   [DateCreated] datetime NOT NULL,
   [IsActive] bit NOT NULL DEFAULT (1),

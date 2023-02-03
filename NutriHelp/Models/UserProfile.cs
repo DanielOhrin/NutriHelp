@@ -30,8 +30,8 @@ namespace NutriHelp.Models
         public char Gender { get; set; }
 
         [Required]
-        [Range(1.2, 1.4)]
-        public decimal ActivityLevel { get; set; }
+        [Range(1, 4)]
+        public int ActivityLevel { get; set; }
 
         [Required]
         [Range(1, 5)]
