@@ -9,5 +9,5 @@ This is my solo capstone project for NSS. It is a calorie-tracking app that allo
 - React Router
 - Microsoft SQL Server (T-SQL)
 - C# .NET
-- ASP .NET API
+- ASP .NET Web API
 - Google Firebase Authentication
