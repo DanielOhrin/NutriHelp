@@ -183,7 +183,7 @@ export default function Register() {
 
   return (
     <section id="register-container">
-      <img className="logo-background" src={logo} alt="Logo" />
+      <img className="auth-logo" src={logo} alt="Logo" />
       <div id={editingCredentials ? "register-box" : "register-2-box"}>
         <h1>Register</h1>
         {

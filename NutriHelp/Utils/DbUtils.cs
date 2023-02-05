@@ -43,7 +43,11 @@ namespace NutriHelp.Utils
 
         public static char GetChar(SqlDataReader reader, string column)
         {
-            return reader.GetChar(reader.GetOrdinal(column));
+            char[] chars = new char[1];
+
+            reader.GetChars(reader.GetOrdinal(column), 0, chars, 0, 1);
+
+            return chars[0];
         }
 
         public static DateTime GetDateTime(SqlDataReader reader, string column)

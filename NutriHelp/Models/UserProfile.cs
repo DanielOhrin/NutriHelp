@@ -49,5 +49,15 @@ namespace NutriHelp.Models
         public DateTime BirthDate { get; set; }
 
         public DateTime DateCreated { get; set; }
+
+        public int UserTypeId { get; set; }
+        public UserType UserType { get; set; }
+
+        //! It might make sense to make a "Daily" Model
+        public int CalorieGoal { get; set; }
+        public int CaloriesRemaining { get; set; }
+        public int WaterGoal { get; set; }
+        public int WaterRemaining { get; set; }
+        public int ExerciseMinutes { get; set; }
     }
 }

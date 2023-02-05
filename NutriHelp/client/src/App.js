@@ -3,8 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Spinner } from 'reactstrap';
 import Header from "./components/Header";
 import ApplicationViews from "./components/ApplicationViews";
-import { onLoginStatusChange, getRole } from "./modules/authManager";
-import firebase from 'firebase/compat/app';
+import { onLoginStatusChange, getRole, getCurrentUID } from "./modules/authManager";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null),
@@ -16,7 +15,7 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      getRole(firebase.auth().currentUser.uid)
+      getRole(getCurrentUID())
         .then(userType => setRole(userType.name))
     } else {
       setRole("")

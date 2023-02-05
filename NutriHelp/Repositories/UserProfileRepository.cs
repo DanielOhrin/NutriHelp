@@ -122,7 +122,7 @@ namespace NutriHelp.Repositories
             }
         }
 
-        public UserProfile GetByFirebaseId(string firebaseUserId)
+        public UserProfile GetByFirebaseId(string firebaseUserId, bool? showDetails)
         {
             using (SqlConnection conn = Connection)
             {
@@ -130,13 +130,22 @@ namespace NutriHelp.Repositories
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @$"
-                        SELECT {SelectUserProfile(null)}
-                        FROM dbo.UserProfile
-                        WHERE FirebaseId = @FirebaseId   
+                    if (showDetails == null || showDetails == false)
+                    {
+                        cmd.CommandText = @$"
+                        SELECT {SelectUserProfile("up")}, ut.[Name]
+                        FROM dbo.UserProfile up
+                        LEFT JOIN dbo.UserType ut ON ut.Id = up.UserTypeId
+                        WHERE FirebaseId = @FirebaseUserId   
                     ";
+                    }
+                    else
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandText = "dbo.DailyRundown";
+                    }
 
-                    DbUtils.AddParameter(cmd, "@FirebaseId", firebaseUserId);
+                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -145,6 +154,14 @@ namespace NutriHelp.Repositories
                         if (reader.Read())
                         {
                             userProfile = ConstructUserProfile(reader);
+                            if (showDetails == true)
+                            {
+                                userProfile.CalorieGoal = DbUtils.GetInt(reader, "CalorieGoal");
+                                userProfile.CaloriesRemaining = DbUtils.GetInt(reader, "CaloriesRemaining");
+                                userProfile.WaterGoal = DbUtils.GetInt(reader, "WaterGoal");
+                                userProfile.WaterRemaining = DbUtils.GetInt(reader, "WaterRemaining");
+                                userProfile.ExerciseMinutes = DbUtils.GetInt(reader, "ExerciseMinutes");
+                            }
                         }
 
                         return userProfile;
@@ -157,11 +174,11 @@ namespace NutriHelp.Repositories
         {
             if (alias != null)
             {
-                return string.Format("{0}.Id, {0}.FirebaseId, {0}.Email, {0}.Username, {0}.FirstName, {0}.LastName, {0}.Gender, {0}.BirthDate, {0}.Weight, {0}.Height, {0}.ActivityLevel, {0}.WeightGoal, {0}.DateCreated", alias);
+                return string.Format("{0}.Id, {0}.FirebaseId, {0}.Email, {0}.Username, {0}.FirstName, {0}.LastName, {0}.Gender, {0}.BirthDate, {0}.Weight, {0}.Height, {0}.ActivityLevel, {0}.WeightGoal, {0}.DateCreated, {0}.UserTypeId", alias);
             }
             else
             {
-                return "Id, FirebaseId, Email, Username, FirstName, LastName, Gender, BirthDate, Weight, Height, ActivityLevel, WeightGoal, DateCreated";
+                return "Id, FirebaseId, Email, Username, FirstName, LastName, Gender, BirthDate, Weight, Height, ActivityLevel, WeightGoal, DateCreated, UserTypeId";
             }
         }
 
@@ -179,9 +196,15 @@ namespace NutriHelp.Repositories
                 BirthDate = DbUtils.GetDateTime(reader, "BirthDate"),
                 Weight = DbUtils.GetInt(reader, "Weight"),
                 Height = DbUtils.GetInt(reader, "Height"),
-                ActivityLevel = DbUtils.GetDecimal(reader, "ActivityLevel"),
+                ActivityLevel = DbUtils.GetInt(reader, "ActivityLevel"),
                 WeightGoal = DbUtils.GetInt(reader, "WeightGoal"),
-                DateCreated = DbUtils.GetDateTime(reader, "DateCreated")
+                DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
+                UserTypeId = DbUtils.GetInt(reader, "UserTypeId"),
+                UserType = new()
+                {
+                    Id = DbUtils.GetInt(reader, "UserTypeId"),
+                    Name = DbUtils.GetString(reader, "Name")
+                }
             };
         }
     }

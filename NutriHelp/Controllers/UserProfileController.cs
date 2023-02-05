@@ -55,9 +55,9 @@ namespace NutriHelp.Controllers
 
         [Authorize]
         [HttpGet("{firebaseUserId}")]
-        public IActionResult Get(string firebaseUserId)
+        public IActionResult Get([FromRoute] string firebaseUserId, [FromQuery] bool? showDetails)
         {
-            UserProfile userProfile = _userProfileRepository.GetByFirebaseId(firebaseUserId);
+            UserProfile userProfile = _userProfileRepository.GetByFirebaseId(firebaseUserId, showDetails);
 
             if (userProfile == null)
             {
