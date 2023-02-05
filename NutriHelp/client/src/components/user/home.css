@@ -19,12 +19,13 @@
 #home-user-stats {
     display: flex;
     flex-flow: column nowrap;
-    justify-content: space-evenly;
-    align-items: center;
+    justify-content: safe space-evenly;
+    align-items: safe center;
     border: 1px solid black; 
     height: 100%;
     border-radius: 1rem;
     box-shadow: 1px 1px;
+    overflow: auto;
 }
 
 #home-user-stats > div {
@@ -48,9 +49,20 @@
     box-shadow: 0.5px 0.5px;
 }
 
+#user-home-btn {
+    max-width: 25%;
+    min-width: fit-content;
+}
+
 @media screen and (max-width: 1100px) {
     #home-logo {
-      width: 15%;
-      margin: 0;
+        width: 15%;
+        margin: 0;
     }
-  }
+}
+
+@media screen and (max-width: 950px) {
+    #home-user-stats > * {
+        flex-direction: column;
+    }
+}

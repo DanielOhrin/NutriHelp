@@ -36,7 +36,7 @@ const Home = () => {
                         </div>
                     </div>
                     <blockquote id="home-quote" cite="https://upperhand.com/50-motivational-workout-quotes/">{randomQuote()}</blockquote>
-                    <Button color="primary w-25" onClick={() => navigate("/daily")}>Detailed View</Button>
+                    <Button color="primary" id="user-home-btn" onClick={() => navigate("/daily")}>Detailed View</Button>
                 </article>
             </div>
         </section>
