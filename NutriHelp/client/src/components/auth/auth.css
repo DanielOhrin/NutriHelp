@@ -1,10 +1,11 @@
 #register-container, #login-container {
-  height: 80%;
+  height: 100%;
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
   width: auto;
+  padding: 2rem;
 }
 
 #login-container {

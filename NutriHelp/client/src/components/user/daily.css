@@ -1,0 +1,20 @@
+#user-daily-container {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+#user-daily-logo {
+    max-width: 10%;
+}
+
+#user-daily-stats-container {
+    margin-top: 1rem;
+}
+
+#user-daily-tables-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}

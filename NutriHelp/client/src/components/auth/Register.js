@@ -211,7 +211,7 @@ export default function Register() {
                     autoComplete="email"
                     className="register-input"
                     name="email"
-                    type="text"
+                    type="email"
                     value={credentials.email}
                     maxLength={30}
                     onChange={changeState}

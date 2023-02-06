@@ -34,6 +34,7 @@ body {
   #root > main {
     height: 92.15%;
     background-color: white;
+    overflow: auto;
   }
   
   #header-component {

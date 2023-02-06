@@ -22,10 +22,11 @@
     justify-content: safe space-evenly;
     align-items: safe center;
     border: 1px solid black; 
-    height: 100%;
+    padding: auto;
     border-radius: 1rem;
     box-shadow: 1px 1px;
     overflow: auto;
+    padding: 0.5rem 0;
 }
 
 #home-user-stats > div {
@@ -54,7 +55,7 @@
     min-width: fit-content;
 }
 
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 2025px) {
     #home-logo {
         width: 15%;
         margin: 0;
