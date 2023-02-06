@@ -156,11 +156,12 @@ namespace NutriHelp.Repositories
                             userProfile = ConstructUserProfile(reader);
                             if (showDetails == true)
                             {
-                                userProfile.CalorieGoal = DbUtils.GetInt(reader, "CalorieGoal");
-                                userProfile.CaloriesRemaining = DbUtils.GetInt(reader, "CaloriesRemaining");
-                                userProfile.WaterGoal = DbUtils.GetInt(reader, "WaterGoal");
-                                userProfile.WaterRemaining = DbUtils.GetInt(reader, "WaterRemaining");
-                                userProfile.ExerciseMinutes = DbUtils.GetInt(reader, "ExerciseMinutes");
+                                userProfile.DailyStats.CalorieGoal = DbUtils.GetInt(reader, "CalorieGoal");
+                                userProfile.DailyStats.CaloriesRemaining = DbUtils.GetInt(reader, "CaloriesRemaining");
+                                userProfile.DailyStats.WaterGoal = DbUtils.GetInt(reader, "WaterGoal");
+                                userProfile.DailyStats.WaterRemaining = DbUtils.GetInt(reader, "WaterRemaining");
+                                userProfile.DailyStats.ExerciseMinutes = DbUtils.GetInt(reader, "ExerciseMinutes");
+                                userProfile.DailyStats.WaterConsumed = DbUtils.GetInt(reader, "WaterConsumed");
                             }
                         }
 
@@ -170,7 +171,27 @@ namespace NutriHelp.Repositories
             }
         }
 
-        private string SelectUserProfile(string alias)
+        public void EditStat(string firebaseUserId, string field, int value) 
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "dbo.EditStat";
+
+                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
+                    DbUtils.AddParameter(cmd, "@Field", field);
+                    DbUtils.AddParameter(cmd, "@Value", value);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static string SelectUserProfile(string alias)
         {
             if (alias != null)
             {
@@ -182,7 +203,7 @@ namespace NutriHelp.Repositories
             }
         }
 
-        private UserProfile ConstructUserProfile(SqlDataReader reader)
+        private static UserProfile ConstructUserProfile(SqlDataReader reader)
         {
             return new UserProfile
             {
@@ -204,7 +225,8 @@ namespace NutriHelp.Repositories
                 {
                     Id = DbUtils.GetInt(reader, "UserTypeId"),
                     Name = DbUtils.GetString(reader, "Name")
-                }
+                },
+                DailyStats = new DailyStats()
             };
         }
     }

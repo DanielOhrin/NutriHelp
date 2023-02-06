@@ -19,3 +19,16 @@ export const getCurrentProfile = (showDetailsBool) => {
         })
     }).then(res => res.json())
 }
+
+export const editStat = (field, value) => {
+    const firebaseId = getCurrentUID()
+
+    return getToken().then(token => {
+        return fetch(`${_apiUrl}/EditStat/${firebaseId}?field=${field}&value=${value}`, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    })
+}

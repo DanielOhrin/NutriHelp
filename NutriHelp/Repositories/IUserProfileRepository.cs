@@ -9,6 +9,6 @@ namespace NutriHelp.Repositories
         bool IsDuplicate(string field, string value);
         void Register(UserProfile userProfile);
         UserProfile GetByFirebaseId(string firebaseUserId, bool? showDetails);
-
+        void EditStat(string firebaseUserId, string field, int value);
     }
 }
