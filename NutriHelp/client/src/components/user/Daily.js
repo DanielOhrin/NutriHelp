@@ -43,21 +43,36 @@ const Daily = () => {
 
     const changeState = (e) => {
         if (e.target.name.includes("add")) {
-            // Since we are only working with numbers on this page, we can treat the value as always being a number.
-            if (isNaN(e.target.value)
-                || e.target.value.trim() === ""
-                || (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 720 - userProfile.dailyStats.exerciseMinutes)) return;
-
             const copy = { ...addStats }
-            copy[e.target.name.split("-")[1]] = parseInt(e.target.value)
 
+            if (e.target.name.includes("exerciseMinutes")) {
+                if (isNaN(e.target.value)
+                    || e.target.value.trim() === ""
+                    || (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 720 - userProfile.dailyStats.exerciseMinutes)) return;
+
+            } else if (e.target.name.includes("waterConsumed")) {
+                if (isNaN(e.target.value)
+                    || e.target.value.trim() === ""
+                    || (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 700 - userProfile.dailyStats.waterConsumed)) return;
+            }
+
+            copy[e.target.name.split("-")[1]] = parseInt(e.target.value)
             setAddStats(copy)
+        } else {
+            //! Hard-Edit Conditionals Here
         }
     }
 
     const addToStat = (e) => {
-        if (e.target.id === "add-exercise") {
-            editStat("exerciseMinutes", parseInt(addStats.exerciseMinutes) + userProfile.dailyStats.exerciseMinutes).then(res => res.ok && resetState())
+        switch (e.target.id) {
+            case "add-exercise":
+                if (addStats.exerciseMinutes === 0) return;
+                editStat("exerciseMinutes", addStats.exerciseMinutes + userProfile.dailyStats.exerciseMinutes).then(res => res.ok && resetState())
+                break
+            default:
+                if (addStats.waterConsumed === 0) return;
+                editStat("waterConsumed", addStats.waterConsumed + userProfile.dailyStats.waterConsumed).then(res => res.ok && resetState())
+                return
         }
     }
 
@@ -99,7 +114,40 @@ const Daily = () => {
                     </>
                 )
             case "Water":
-                return ""
+                return (
+                    <>
+                        <div className="text-center">
+                            <h4>Water Remaining: {userProfile.dailyStats?.waterGoal - userProfile.dailyStats?.waterConsumed} oz.</h4>
+                            <h4>Amount Drank: {userProfile.dailyStats?.waterConsumed} oz.</h4>
+                            <Input
+                                name="add-waterConsumed"
+                                type="number"
+                                min={1}
+                                value={addStats.waterConsumed}
+                                onChange={changeState}
+                            />
+                            <Button className="mt-1 mx-1" color="primary" onClick={toggleModal}>Edit Ounces</Button>
+                            <Button id="add-waterConsumed" className="mt-1 mx-1" color="success" onClick={addToStat}>Add Ounces</Button>
+                            <Modal isOpen={modal} toggle={toggleModal}>
+                                <ModalHeader toggle={toggleModal}>Water (oz.)</ModalHeader>
+                                <ModalBody>
+                                    <Label for="water">New Value</Label>
+                                    <Input
+                                        name="water"
+                                        type="number"
+                                        min={1}
+                                        max={700}
+                                        onChange={changeState}
+                                    />
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button onClick={toggleModal}>Cancel</Button>
+                                    <Button color="primary">Confirm</Button>
+                                </ModalFooter>
+                            </Modal>
+                        </div>
+                    </>
+                )
             case "Weight":
                 return ""
             default:
