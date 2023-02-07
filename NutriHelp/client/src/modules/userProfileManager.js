@@ -32,3 +32,16 @@ export const editStat = (field, value) => {
         })
     })
 }
+
+export const getMeals = () => {
+    const firebaseId = getCurrentUID()
+
+    return getToken().then(token => {
+        return fetch(`${_apiUrl}/meals/${firebaseId}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }).then(res => res.status === 200 && res.json())
+}

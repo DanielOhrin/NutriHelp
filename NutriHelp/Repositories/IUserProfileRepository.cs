@@ -1,4 +1,6 @@
-﻿using NutriHelp.Models;
+﻿using System.Collections.Generic;
+
+using NutriHelp.Models;
 
 namespace NutriHelp.Repositories
 {
@@ -10,5 +12,6 @@ namespace NutriHelp.Repositories
         void Register(UserProfile userProfile);
         UserProfile GetByFirebaseId(string firebaseUserId, bool? showDetails);
         void EditStat(string firebaseUserId, string field, int value);
+        List<Meal> GetMeals(string firebaseUserId);
     }
 }

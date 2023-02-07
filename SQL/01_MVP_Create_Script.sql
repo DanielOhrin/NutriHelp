@@ -84,7 +84,7 @@ GO
 
 CREATE TABLE [MealType] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
-  [name] nvarchar(15) NOT NULL
+  [Name] nvarchar(15) NOT NULL
 )
 GO
 

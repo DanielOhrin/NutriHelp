@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 import { editStat, getCurrentProfile } from "../../modules/userProfileManager"
 import logo from "../../assets/images/company_logo.png"
 import "./daily.css"
+import DailyTables from "./DailyTables"
 
 const Daily = () => {
     const [userProfile, setUserProfile] = useState({}),
@@ -119,7 +120,7 @@ const Daily = () => {
                                 name="add-exerciseMinutes"
                                 type="number"
                                 min={1}
-                                max={720 - userProfile.dailyStats?.exerciseMinutes}
+                                max={userProfile.dailyStats ? 720 - userProfile.dailyStats?.exerciseMinutes : 720}
                                 value={addStats.exerciseMinutes}
                                 onChange={changeState}
                             />
@@ -217,8 +218,9 @@ const Daily = () => {
                 </DropdownMenu>
             </Dropdown>
             <div id="user-daily-stats-container">{displayStat()}</div>
+            <hr className="w-100" />
             <div id="user-daily-tables-container">
-
+                <DailyTables />
             </div>
         </section>
     )

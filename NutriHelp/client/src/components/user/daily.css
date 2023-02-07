@@ -18,3 +18,21 @@
     flex-wrap: wrap;
     justify-content: space-between;
 }
+
+#user-daily-tables {
+    text-align: center;
+}
+
+
+#user-daily-tables > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.meal-table {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 45%;
+    margin-top: 1rem;
+}

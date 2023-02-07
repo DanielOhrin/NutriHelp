@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using NutriHelp.Models;
@@ -65,6 +67,20 @@ namespace NutriHelp.Controllers
             }
 
             return Ok(userProfile);
+        }
+
+        [Authorize]
+        [HttpGet("meals/{firebaseUserId}")]
+        public IActionResult GetMeals([FromRoute] string firebaseUserId)
+        {
+            List<Meal> meals = _userProfileRepository.GetMeals(firebaseUserId);
+            
+            if (meals.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(meals);
         }
 
         [Authorize]

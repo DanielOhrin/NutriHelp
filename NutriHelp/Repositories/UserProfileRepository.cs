@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 
 using Microsoft.Data.SqlClient;
@@ -187,6 +189,70 @@ namespace NutriHelp.Repositories
                     DbUtils.AddParameter(cmd, "@Value", value);
 
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<Meal> GetMeals(string firebaseUserId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "dbo.GetDailyMeals";
+
+                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<Meal> meals = new();
+
+                        while (reader.Read())
+                        {
+                            int mealId = DbUtils.GetInt(reader, "MealId");
+
+                            if (meals.FirstOrDefault(x => x.Id == mealId) == null)
+                            {
+                                Meal newMeal = new()
+                                {
+                                    Id = mealId,
+                                    MealTypeId = DbUtils.GetInt(reader, "MealTypeId"),
+                                    MealType = new()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "MealTypeId"),
+                                        Name = DbUtils.GetString(reader, "Name"),
+                                    },
+                                    Date = DbUtils.GetDateTime(reader, "MealDate"),
+                                    UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+                                    Ingredients = new List<MealIngredient>()
+                                };
+                                meals.Add(newMeal);
+                            }
+
+                            Meal currentMeal = meals.First(x => x.Id == mealId);
+
+                            MealIngredient newMealIngredient = new()
+                            {
+                                Id = DbUtils.GetInt(reader, "MIId"),
+                                MealId = mealId,
+                                Amount = DbUtils.GetInt(reader, "Amount"),
+                                IngredientId = DbUtils.GetInt(reader, "IngredientId"),
+                                Ingredient = new()
+                                {
+                                    Id = DbUtils.GetInt(reader, "IngredientId"),
+                                    Name = DbUtils.GetString(reader, "IngredientName"),
+                                    CaloriesPerServing = DbUtils.GetInt(reader, "CaloriesPerServing"),
+                                    ServingSize = DbUtils.GetString(reader, "ServingSize")
+                                }
+                            };
+                            currentMeal.Ingredients.Add(newMealIngredient);
+                        }
+
+                        return meals;
+                    }
                 }
             }
         }
