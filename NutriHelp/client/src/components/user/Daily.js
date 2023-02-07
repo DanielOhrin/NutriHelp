@@ -209,7 +209,7 @@ const Daily = () => {
             <img id="user-daily-logo" src={logo} alt="Logo" />
             <h1>Daily Stats for {userProfile.firstName} {userProfile.lastName}</h1>
             <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} direction="down">
-                <DropdownToggle caret>Toggle Stats</DropdownToggle>
+                <DropdownToggle caret color="dark">Toggle Stats</DropdownToggle>
                 <DropdownMenu>
                     <DropdownItem header>Stat Type</DropdownItem>
                     <DropdownItem onClick={() => setStatType("Exercise")}>Exercise</DropdownItem>
