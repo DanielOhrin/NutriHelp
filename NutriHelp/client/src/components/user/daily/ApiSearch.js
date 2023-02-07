@@ -39,9 +39,9 @@ async function getFoodByName(foodName) {
         headers: {
             "Content-Type": "application/json",
         },
-        "appId": process.env.NUTRITIONIX_API_ID,
-        "appKey": process.env.NUTRITIONIX_API_KEY,
         body: JSON.stringify({
+            appId: process.env.REACT_APP_NUTRITIONIX_API_ID,
+            appKey: process.env.REACT_APP_NUTRITIONIX_API_KEY,
             fields: ["item_id", "item_name", "brand_name", "nf_calories", "nf_serving_size_qty", "nf_serving_size_unit"],
             queries: {
                 "item_name": `${foodName}`
