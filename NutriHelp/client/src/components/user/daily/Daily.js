@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
-import { editStat, getCurrentProfile } from "../../modules/userProfileManager"
-import logo from "../../assets/images/company_logo.png"
+import { editStat, getCurrentProfile } from "../../../modules/userProfileManager"
+import logo from "../../../assets/images/company_logo.png"
 import "./daily.css"
 import DailyTables from "./DailyTables"
 
@@ -209,7 +209,7 @@ const Daily = () => {
             <img id="user-daily-logo" src={logo} alt="Logo" />
             <h1>Daily Stats for {userProfile.firstName} {userProfile.lastName}</h1>
             <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} direction="down">
-                <DropdownToggle caret color="dark">Toggle Stats</DropdownToggle>
+                <DropdownToggle caret color="dark">Toggle Stat</DropdownToggle>
                 <DropdownMenu>
                     <DropdownItem header>Stat Type</DropdownItem>
                     <DropdownItem onClick={() => setStatType("Exercise")}>Exercise</DropdownItem>

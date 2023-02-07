@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
-import Daily from "./user/Daily";
+import Daily from "./user/daily/Daily";
 import Home from "./user/Home";
 
 export default function ApplicationViews({ isLoggedIn, role }) {

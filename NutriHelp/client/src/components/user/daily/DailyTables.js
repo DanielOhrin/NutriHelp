@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
-import { getMeals } from "../../modules/userProfileManager"
+import { getMeals } from "../../../modules/userProfileManager"
+import ApiSearch from "./ApiSearch"
 import MealTable from "./MealTable"
 
 const DailyTables = () => {
@@ -29,7 +30,7 @@ const DailyTables = () => {
             <Modal isOpen={modal} toggle={toggleModal}>
                 <ModalHeader toggle={toggleModal}>New Food</ModalHeader>
                 <ModalBody>
-                    Add API Select2 here!!!
+                    <ApiSearch />
                 </ModalBody>
                 <ModalFooter>
                     <Button onClick={toggleModal} color="secondary">Cancel</Button>
