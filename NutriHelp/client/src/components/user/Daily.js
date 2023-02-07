@@ -7,7 +7,7 @@ import "./daily.css"
 const Daily = () => {
     const [userProfile, setUserProfile] = useState({}),
         [dropdownOpen, setDropdownOpen] = useState(false),
-        [statType, setStatType] = useState("Weight"),
+        [statType, setStatType] = useState("Exercise"),
         [modal, setModal] = useState(false),
         [stats, setStats] = useState({}), //! Hard Edit
         [addStats, setAddStats] = useState({ //! Add
@@ -21,7 +21,7 @@ const Daily = () => {
             setStats({
                 exerciseMinutes: data.dailyStats.exerciseMinutes,
                 waterConsumed: data.dailyStats.waterConsumed,
-                weight: data.weight
+                weight: Math.floor(data.weight * 2.204623)
             })
         })
     }, [])
@@ -42,37 +42,69 @@ const Daily = () => {
     const toggleModal = () => setModal(!modal)
 
     const changeState = (e) => {
+        if (isNaN(e.target.value) || e.target.value.trim() === "") return;
         if (e.target.name.includes("add")) {
             const copy = { ...addStats }
 
             if (e.target.name.includes("exerciseMinutes")) {
-                if (isNaN(e.target.value)
-                    || e.target.value.trim() === ""
-                    || (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 720 - userProfile.dailyStats.exerciseMinutes)) return;
+                if ((parseInt(e.target.value) < 1 || parseInt(e.target.value) > 720 - userProfile.dailyStats.exerciseMinutes)) return;
 
             } else if (e.target.name.includes("waterConsumed")) {
-                if (isNaN(e.target.value)
-                    || e.target.value.trim() === ""
-                    || (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 700 - userProfile.dailyStats.waterConsumed)) return;
+                if ((parseInt(e.target.value) < 1 || parseInt(e.target.value) > 700 - userProfile.dailyStats.waterConsumed)) return;
             }
 
             copy[e.target.name.split("-")[1]] = parseInt(e.target.value)
             setAddStats(copy)
         } else {
             //! Hard-Edit Conditionals Here
+            const copy = { ...stats }
+
+            if (e.target.name === "exercise") {
+                if (parseInt(e.target.value) < 0 || parseInt(e.target.value) > 720) return;
+
+                copy.exerciseMinutes = parseInt(e.target.value)
+            } else if (e.target.name === "water") {
+                if (parseInt(e.target.value) < 0 || parseInt(e.target.value) > 700) return;
+
+                copy.waterConsumed = parseInt(e.target.value)
+            } else if (e.target.name === "weight") {
+                if (parseInt(e.target.value) < 80 || parseInt(e.target.value) > 700) return;
+
+                copy.weight = parseInt(e.target.value)
+            }
+
+            setStats(copy)
         }
     }
 
     const addToStat = (e) => {
         switch (e.target.id) {
-            case "add-exercise":
+            case "add-exercise-btn":
                 if (addStats.exerciseMinutes === 0) return;
                 editStat("exerciseMinutes", addStats.exerciseMinutes + userProfile.dailyStats.exerciseMinutes).then(res => res.ok && resetState())
-                break
-            default:
+                return
+            case "add-water-btn":
                 if (addStats.waterConsumed === 0) return;
                 editStat("waterConsumed", addStats.waterConsumed + userProfile.dailyStats.waterConsumed).then(res => res.ok && resetState())
                 return
+            default:
+                throw new Error("Stat Not Found")
+        }
+    }
+
+    const hardEditStat = (e) => {
+        switch (e.target.id) {
+            case "edit-exercise-btn":
+                editStat("exerciseMinutes", stats.exerciseMinutes).then(res => res.ok && resetState())
+                return
+            case "edit-water-btn":
+                editStat("waterConsumed", stats.waterConsumed).then(res => res.ok && resetState())
+                return
+            case "edit-weight-btn":
+                editStat("weight", Math.round(stats.weight * 0.453592)).then(res => res.ok && resetState())
+                return
+            default:
+                throw new Error("Stat Not Found")
         }
     }
 
@@ -92,7 +124,7 @@ const Daily = () => {
                                 onChange={changeState}
                             />
                             <Button className="mt-1 mx-1" color="primary" onClick={toggleModal}>Edit Minutes</Button>
-                            <Button id="add-exercise" className="mt-1 mx-1" color="success" onClick={addToStat}>Add Minutes</Button>
+                            <Button id="add-exercise-btn" className="mt-1 mx-1" color="success" onClick={addToStat}>Add Minutes</Button>
                             <Modal isOpen={modal} toggle={toggleModal}>
                                 <ModalHeader toggle={toggleModal}>Exercise</ModalHeader>
                                 <ModalBody>
@@ -100,14 +132,15 @@ const Daily = () => {
                                     <Input
                                         name="exercise"
                                         type="number"
-                                        min={1}
+                                        min={0}
                                         max={720}
+                                        value={stats.exerciseMinutes}
                                         onChange={changeState}
                                     />
                                 </ModalBody>
                                 <ModalFooter>
                                     <Button onClick={toggleModal}>Cancel</Button>
-                                    <Button color="primary">Confirm</Button>
+                                    <Button id="edit-exercise-btn" onClick={hardEditStat} color="primary">Confirm</Button>
                                 </ModalFooter>
                             </Modal>
                         </div>
@@ -123,11 +156,12 @@ const Daily = () => {
                                 name="add-waterConsumed"
                                 type="number"
                                 min={1}
+                                max={700}
                                 value={addStats.waterConsumed}
                                 onChange={changeState}
                             />
                             <Button className="mt-1 mx-1" color="primary" onClick={toggleModal}>Edit Ounces</Button>
-                            <Button id="add-waterConsumed" className="mt-1 mx-1" color="success" onClick={addToStat}>Add Ounces</Button>
+                            <Button id="add-water-btn" className="mt-1 mx-1" color="success" onClick={addToStat}>Add Ounces</Button>
                             <Modal isOpen={modal} toggle={toggleModal}>
                                 <ModalHeader toggle={toggleModal}>Water (oz.)</ModalHeader>
                                 <ModalBody>
@@ -135,21 +169,35 @@ const Daily = () => {
                                     <Input
                                         name="water"
                                         type="number"
-                                        min={1}
+                                        min={0}
                                         max={700}
+                                        value={stats.waterConsumed}
                                         onChange={changeState}
                                     />
                                 </ModalBody>
                                 <ModalFooter>
                                     <Button onClick={toggleModal}>Cancel</Button>
-                                    <Button color="primary">Confirm</Button>
+                                    <Button id="edit-water-btn" onClick={hardEditStat} color="primary">Confirm</Button>
                                 </ModalFooter>
                             </Modal>
                         </div>
                     </>
                 )
             case "Weight":
-                return ""
+                return (
+                    <div className="text-center">
+                        <h4>Current Weight: {Math.floor(userProfile.weight * 2.204623)} lbs.</h4>
+                        <Input
+                            name="weight"
+                            type="number"
+                            min={80}
+                            max={700}
+                            value={stats.weight}
+                            onChange={changeState}
+                        />
+                        <Button id="edit-weight-btn" className="w-100 mt-1" onClick={hardEditStat} color="primary">Edit Weight</Button>
+                    </div>
+                )
             default:
                 return "An error occured. Please select a Stat Type"
         }
