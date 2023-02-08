@@ -4,14 +4,21 @@ namespace NutriHelp.Models
 {
     public class Ingredient //! This is pretty much a join table to the food API
     {
-        public int Id { get; set; }
+        [Required]
+        public string Id { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string Name { get; set; }
         
+        [Required]
         public int CaloriesPerServing { get; set; }
 
+        [Required]
+        public int Quantity { get; set; }
+
+        [Required]
         [StringLength(50)]
-        public string ServingSize { get; set; }
+        public string Measurement { get; set; }
     }
 }

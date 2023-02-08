@@ -13,6 +13,9 @@ const ApiSearch = ({ formChoices, setFormChoices }) => {
     const updateOptions = useCallback(
         (userInput) => {
             clearTimeout(debounce.current)
+
+            if (userInput.trim() === "") return;
+
             debounce.current = setTimeout(() => {
 
                 getFoodByName(userInput).then(data => {
@@ -46,7 +49,7 @@ async function getFoodByName(foodName) {
         body: JSON.stringify({
             appId: process.env.REACT_APP_NUTRITIONIX_API_ID,
             appKey: process.env.REACT_APP_NUTRITIONIX_API_KEY,
-            fields: ["item_id", "item_name", "brand_name", "nf_calories", "nf_serving_size_qty", "nf_serving_size_unit", "images_front_full_url"],
+            fields: ["item_id", "item_name", "nf_calories", "nf_serving_size_qty", "nf_serving_size_unit", "images_front_full_url"],
             queries: {
                 "item_name": `${foodName}`
             }

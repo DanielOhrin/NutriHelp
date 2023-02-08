@@ -24,15 +24,15 @@ const Home = () => {
                     <div>
                         <div>
                             <h5>Calories Remaining</h5>
-                            <big>{userProfile.caloriesRemaining}</big>
+                            <big>{userProfile.dailyStats?.caloriesRemaining}</big>
                         </div>
                         <div>
                             <h5>Water Remaining</h5>
-                            <big>{userProfile.waterRemaining} oz.</big>
+                            <big>{userProfile.dailyStats?.waterRemaining} oz.</big>
                         </div>
                         <div>
                             <h5>Exercise Minutes</h5>
-                            <big>{userProfile.exerciseMinutes}</big>
+                            <big>{userProfile.dailyStats?.exerciseMinutes}</big>
                         </div>
                     </div>
                     <blockquote id="home-quote" cite="https://upperhand.com/50-motivational-workout-quotes/">{randomQuote()}</blockquote>

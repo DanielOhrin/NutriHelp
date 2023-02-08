@@ -13,5 +13,7 @@ namespace NutriHelp.Repositories
         UserProfile GetByFirebaseId(string firebaseUserId, bool? showDetails);
         void EditStat(string firebaseUserId, string field, int value);
         List<Meal> GetMeals(string firebaseUserId);
+        void AddFood(string firebaseUserId, AddMealDTO dto);
+        void DeleteFood(string firebaseUserId, string foodId);
     }
 }

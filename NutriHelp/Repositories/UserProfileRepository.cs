@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks.Dataflow;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -234,25 +235,79 @@ namespace NutriHelp.Repositories
 
                             Meal currentMeal = meals.First(x => x.Id == mealId);
 
-                            MealIngredient newMealIngredient = new()
+                            if (!reader.IsDBNull(reader.GetOrdinal("MIID")))
                             {
-                                Id = DbUtils.GetInt(reader, "MIId"),
-                                MealId = mealId,
-                                Amount = DbUtils.GetInt(reader, "Amount"),
-                                IngredientId = DbUtils.GetInt(reader, "IngredientId"),
-                                Ingredient = new()
+                                MealIngredient newMealIngredient = new()
                                 {
-                                    Id = DbUtils.GetInt(reader, "IngredientId"),
-                                    Name = DbUtils.GetString(reader, "IngredientName"),
-                                    CaloriesPerServing = DbUtils.GetInt(reader, "CaloriesPerServing"),
-                                    ServingSize = DbUtils.GetString(reader, "ServingSize")
-                                }
-                            };
-                            currentMeal.Ingredients.Add(newMealIngredient);
+                                    Id = DbUtils.GetInt(reader, "MIId"),
+                                    MealId = mealId,
+                                    Amount = DbUtils.GetInt(reader, "Amount"),
+                                    IngredientId = DbUtils.GetString(reader, "IngredientId"),
+                                    Ingredient = new()
+                                    {
+                                        Id = DbUtils.GetString(reader, "IngredientId"),
+                                        Name = DbUtils.GetString(reader, "IngredientName"),
+                                        CaloriesPerServing = DbUtils.GetInt(reader, "CaloriesPerServing"),
+                                        Quantity = DbUtils.GetInt(reader, "Quantity"),
+                                        Measurement = DbUtils.GetString(reader, "Measurement")
+                                    }
+                                };
+                                currentMeal.Ingredients.Add(newMealIngredient);
+                            }
                         }
 
                         return meals;
                     }
+                }
+            }
+        }
+
+        public void AddFood(string firebaseUserId, AddMealDTO dto)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "dbo.AddFood";
+
+                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
+                    DbUtils.AddParameter(cmd, "@MealTypeId", dto.MealTypeId);
+                    DbUtils.AddParameter(cmd, "@Amount", dto.MealIngredient.Amount);
+                    DbUtils.AddParameter(cmd, "@IngredientId", dto.MealIngredient.Ingredient.Id);
+                    DbUtils.AddParameter(cmd, "@Name", dto.MealIngredient.Ingredient.Name);
+                    DbUtils.AddParameter(cmd, "@CaloriesPerServing", dto.MealIngredient.Ingredient.CaloriesPerServing);
+                    DbUtils.AddParameter(cmd, "@Quantity", dto.MealIngredient.Ingredient.Quantity);
+                    DbUtils.AddParameter(cmd, "@Measurement", dto.MealIngredient.Ingredient.Measurement);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteFood(string firebaseUserId, string foodId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        DELETE FROM dbo.MealIngredient
+                        WHERE IngredientId = @IngredientId
+                            AND MealId IN (
+                                SELECT Id
+                                FROM dbo.Meal
+                                WHERE [Date] = CAST(CAST(GETDATE() AS DATE) AS DATETIME)
+                            )
+                    ";
+
+                    DbUtils.AddParameter(cmd, "@IngredientId", foodId);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }

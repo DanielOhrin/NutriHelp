@@ -67,10 +67,11 @@ CREATE TABLE [UserType] (
 GO
 
 CREATE TABLE [Ingredient] (
-  [Id] int PRIMARY KEY IDENTITY(1, 1),
-  [Name] nvarchar(100),
+  [Id] nvarchar(100) PRIMARY KEY,
+  [Name] nvarchar(100) NOT NULL,
   [CaloriesPerServing] int NOT NULL,
-  [ServingSize] nvarchar(50) NOT NULL
+  [Quantity] int NOT NULL,
+  [Measurement] nvarchar(50) NOT NULL
 )
 GO
 
@@ -78,7 +79,7 @@ CREATE TABLE [Meal] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
   [UserProfileId] int NOT NULL,
   [MealTypeId] int NOT NULL,
-  [Date] datetime NOT NULL
+  [Date] datetime NOT NULL DEFAULT(CAST(CAST(GETDATE() AS DATE) AS DATETIME))
 )
 GO
 
@@ -92,7 +93,7 @@ CREATE TABLE [MealIngredient] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
   [Amount] int NOT NULL,
   [MealId] int NOT NULL,
-  [IngredientId] int NOT NULL
+  [IngredientId] nvarchar(100) NOT NULL
 )
 GO
 

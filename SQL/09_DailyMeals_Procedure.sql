@@ -15,7 +15,7 @@ DECLARE @UserId INT = (
 
 SELECT m.Id MealId, m.[Date] MealDate, m.[UserProfileId], m.MealTypeId, mt.[Name],
 		mi.Id MIId, mi.MealId MIMealId, mi.Amount, mi.IngredientId,
-		 i.[Name] IngredientName, i.CaloriesPerServing, i.ServingSize
+		 i.[Name] IngredientName, i.CaloriesPerServing, i.Quantity, i.Measurement
 FROM dbo.Meal m
 	LEFT JOIN dbo.MealType mt ON mt.Id = m.MealTypeId
 	LEFT JOIN dbo.MealIngredient mi ON mi.MealId = m.Id

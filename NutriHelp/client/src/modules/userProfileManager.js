@@ -45,3 +45,31 @@ export const getMeals = () => {
         })
     }).then(res => res.status === 200 && res.json())
 }
+
+export const addFood = (DTO) => {
+    const firebaseId = getCurrentUID()
+
+    return getToken().then(token => {
+        return fetch(`${_apiUrl}/AddMeal/${firebaseId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(DTO)
+        })
+    })
+}
+
+export const deleteFood = (foodId) => {
+    const firebaseId = getCurrentUID()
+
+    return getToken().then(token => {
+        return fetch(`${_apiUrl}/DeleteFood/${firebaseId}?foodId=${foodId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    })
+}

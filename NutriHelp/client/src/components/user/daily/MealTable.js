@@ -1,7 +1,8 @@
-import { useCallback, } from "react"
+import React, { useCallback } from "react"
 import { Table } from "reactstrap"
+import MealRow from "./MealRow"
 
-const MealTable = ({ mealData }) => {
+const MealTable = ({ mealData, resetState }) => {
     const emptyTable = useCallback((mealType) => {
         return (
             <div className="meal-table">
@@ -11,7 +12,7 @@ const MealTable = ({ mealData }) => {
                         <tr>
                             <th>Food</th>
                             <th>Servings</th>
-                            <th>Calories (Total)</th>
+                            <th>Calories</th>
                             <th>Modify</th>
                         </tr>
                     </thead>
@@ -37,17 +38,14 @@ const MealTable = ({ mealData }) => {
                         <tr>
                             <th>Food</th>
                             <th>Servings</th>
-                            <th>Calories (Total)</th>
+                            <th>Calories</th>
                             <th>Modify</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>etc</td>
-                            <td>etc</td>
-                            <td>etc</td>
-                            <td>etc</td>
-                        </tr>
+                        {
+                            mealData.ingredients.map((ing, i) => <MealRow key={`${mealData.mealType.name}--row--${i}`} ingredient={ing} resetState={resetState} />)
+                        }
                     </tbody>
                 </Table>
             </div>

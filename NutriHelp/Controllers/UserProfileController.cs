@@ -99,5 +99,24 @@ namespace NutriHelp.Controllers
 
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPost("AddMeal/{firebaseUserId}")]
+        public IActionResult AddMeal([FromRoute] string firebaseUserId, [FromBody] AddMealDTO dto)
+        {
+            _userProfileRepository.AddFood(firebaseUserId, dto);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteFood/{firebaseUserId}")]
+        public IActionResult AddMeal([FromRoute] string firebaseUserId, [FromQuery] string foodId)
+        {
+            _userProfileRepository.DeleteFood(firebaseUserId, foodId);
+
+            return NoContent();
+        }
+
     }
 } 
