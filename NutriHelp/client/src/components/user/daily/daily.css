@@ -23,7 +23,6 @@
     text-align: center;
 }
 
-
 #user-daily-tables > div {
     display: flex;
     flex-wrap: wrap;
@@ -35,4 +34,20 @@
     flex-flow: column nowrap;
     width: 45%;
     margin-top: 1rem;
+}
+
+.foodOption {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.add-food-div {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.add-food-div > * {
+    width: 100% !important;
 }

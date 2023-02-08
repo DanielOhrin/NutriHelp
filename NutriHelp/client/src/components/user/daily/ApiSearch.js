@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Select from "react-select";
 
-const ApiSearch = () => {
+const ApiSearch = ({ formChoices, setFormChoices }) => {
     const [options, setOptions] = useState([]),
         [dataset, setDataset] = useState([]),
         debounce = useRef(null)
@@ -19,14 +19,18 @@ const ApiSearch = () => {
                     setDataset(data.hits)
 
                     setOptions(data.hits.map(foodItem => {
-                        return { value: foodItem.fields.item_id, label: foodItem.fields.item_name }
+                        return { value: foodItem.fields.item_id, label: `${foodItem.fields.item_name} - ${foodItem.fields.nf_serving_size_qty ?? 1} ${foodItem.fields.nf_serving_size_unit ?? ""} | ${foodItem.fields.nf_calories} kcal` }
                     }))
                 })
             }, 500)
         }, [])
 
     return (
-        <Select options={options} onInputChange={updateOptions} />
+        <Select options={options} onInputChange={updateOptions} onChange={e => {
+            const copy = { ...formChoices }
+            copy.food = dataset.find(food => food.fields.item_id === e.value).fields
+            setFormChoices(copy)
+        }} />
     )
 };
 
@@ -42,7 +46,7 @@ async function getFoodByName(foodName) {
         body: JSON.stringify({
             appId: process.env.REACT_APP_NUTRITIONIX_API_ID,
             appKey: process.env.REACT_APP_NUTRITIONIX_API_KEY,
-            fields: ["item_id", "item_name", "brand_name", "nf_calories", "nf_serving_size_qty", "nf_serving_size_unit"],
+            fields: ["item_id", "item_name", "brand_name", "nf_calories", "nf_serving_size_qty", "nf_serving_size_unit", "images_front_full_url"],
             queries: {
                 "item_name": `${foodName}`
             }
