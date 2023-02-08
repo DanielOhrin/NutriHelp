@@ -118,7 +118,6 @@ namespace NutriHelp.Controllers
             return NoContent();
         }
 
-        //! http://localhost:3000/api/userprofile/EditFood?foodId=54b72bac55f4857d71b77ac5&mealId=1   newAmount: 2
         [Authorize]
         [HttpPatch("EditFood")]
         public IActionResult EditFood([FromQuery] string foodId, [FromQuery] int mealId, [FromQuery] int newAmount)

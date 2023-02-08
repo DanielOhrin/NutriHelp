@@ -333,8 +333,6 @@ namespace NutriHelp.Repositories
             }
         }
 
-        //public void EditFood(string firebaseUserId, string foodId, )
-
         private static string SelectUserProfile(string alias)
         {
             if (alias != null)
