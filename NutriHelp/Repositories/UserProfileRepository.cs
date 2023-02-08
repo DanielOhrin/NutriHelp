@@ -287,7 +287,7 @@ namespace NutriHelp.Repositories
             }
         }
 
-        public void DeleteFood(string firebaseUserId, string foodId)
+        public void DeleteFood(string firebaseUserId, string foodId, int mealId)
         {
             using (SqlConnection conn = Connection)
             {
@@ -298,19 +298,19 @@ namespace NutriHelp.Repositories
                     cmd.CommandText = @"
                         DELETE FROM dbo.MealIngredient
                         WHERE IngredientId = @IngredientId
-                            AND MealId IN (
-                                SELECT Id
-                                FROM dbo.Meal
-                                WHERE [Date] = CAST(CAST(GETDATE() AS DATE) AS DATETIME)
-                            )
+                        AND MealId = @MealId
                     ";
 
+                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
                     DbUtils.AddParameter(cmd, "@IngredientId", foodId);
+                    DbUtils.AddParameter(cmd, "@MealId", mealId);
 
                     cmd.ExecuteNonQuery();
                 }
             }
         }
+
+        //public void EditFood(string firebaseUserId, string foodId, )
 
         private static string SelectUserProfile(string alias)
         {

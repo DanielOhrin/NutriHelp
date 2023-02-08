@@ -111,9 +111,9 @@ namespace NutriHelp.Controllers
 
         [Authorize]
         [HttpDelete("DeleteFood/{firebaseUserId}")]
-        public IActionResult AddMeal([FromRoute] string firebaseUserId, [FromQuery] string foodId)
+        public IActionResult AddMeal([FromRoute] string firebaseUserId, [FromQuery] string foodId, [FromQuery] int mealId)
         {
-            _userProfileRepository.DeleteFood(firebaseUserId, foodId);
+            _userProfileRepository.DeleteFood(firebaseUserId, foodId, mealId);
 
             return NoContent();
         }

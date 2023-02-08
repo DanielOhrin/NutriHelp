@@ -61,11 +61,11 @@ export const addFood = (DTO) => {
     })
 }
 
-export const deleteFood = (foodId) => {
+export const deleteFood = (foodId, mealId) => {
     const firebaseId = getCurrentUID()
 
     return getToken().then(token => {
-        return fetch(`${_apiUrl}/DeleteFood/${firebaseId}?foodId=${foodId}`, {
+        return fetch(`${_apiUrl}/DeleteFood/${firebaseId}?foodId=${foodId}&mealId=${mealId}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${token}`

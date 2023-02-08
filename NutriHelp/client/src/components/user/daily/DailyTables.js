@@ -90,8 +90,8 @@ const DailyTables = () => {
             <Button onClick={toggleModal} color="primary">Add Food</Button>
             <div>
                 {
-                    defaultTypes.map((type, i) => {
-                        if (types.includes(type) && meals.find(m => m.ingredients.length)) {
+                    defaultTypes.map(type => {
+                        if (types.includes(type) && meals.find(m => m.ingredients.length && m.mealType.name === type)) {
                             return <MealTable key={`meal--${meals.find(m => m.mealType.name === type).id}`}
                                 mealData={meals.find(m => m.mealType.name === type)}
                                 resetState={resetState} />

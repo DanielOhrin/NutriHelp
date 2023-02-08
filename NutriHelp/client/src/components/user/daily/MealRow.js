@@ -6,7 +6,7 @@ const MealRow = ({ ingredient, resetState }) => {
     const [editModal, setEditModal] = useState(false)
 
     const confirmDelete = useCallback(() => {
-        deleteFood(ingredient.ingredient.id)
+        deleteFood(ingredient.ingredient.id, ingredient.mealId)
             .then(res => {
                 if (res.ok) {
                     setEditModal(!editModal)
