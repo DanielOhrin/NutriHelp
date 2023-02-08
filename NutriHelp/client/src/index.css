@@ -96,6 +96,11 @@ code {
     display: flex;
 }
 
+.flex-col {
+    display: flex;
+    flex-flow: column;
+}
+
 .items-center {
     align-items: center;
 }

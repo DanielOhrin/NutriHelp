@@ -14,6 +14,7 @@ namespace NutriHelp.Repositories
         void EditStat(string firebaseUserId, string field, int value);
         List<Meal> GetMeals(string firebaseUserId);
         void AddFood(string firebaseUserId, AddMealDTO dto);
-        void DeleteFood(string firebaseUserId, string foodId, int mealId);
+        void DeleteFood(string foodId, int mealId);
+        void EditFood(string foodId, int mealId, int newAmount);
     }
 }

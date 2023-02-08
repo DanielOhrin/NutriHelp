@@ -92,7 +92,7 @@ namespace NutriHelp.Controllers
         }
 
         [Authorize]
-        [HttpPut("EditStat/{firebaseUserId}")]
+        [HttpPatch("EditStat/{firebaseUserId}")]
         public IActionResult EditStat([FromRoute] string firebaseUserId, [FromQuery] string field, [FromQuery] int value)
         {
             _userProfileRepository.EditStat(firebaseUserId, field, value);
@@ -101,8 +101,8 @@ namespace NutriHelp.Controllers
         }
 
         [Authorize]
-        [HttpPost("AddMeal/{firebaseUserId}")]
-        public IActionResult AddMeal([FromRoute] string firebaseUserId, [FromBody] AddMealDTO dto)
+        [HttpPost("AddFood/{firebaseUserId}")]
+        public IActionResult AddFood([FromRoute] string firebaseUserId, [FromBody] AddMealDTO dto)
         {
             _userProfileRepository.AddFood(firebaseUserId, dto);
 
@@ -110,13 +110,22 @@ namespace NutriHelp.Controllers
         }
 
         [Authorize]
-        [HttpDelete("DeleteFood/{firebaseUserId}")]
-        public IActionResult AddMeal([FromRoute] string firebaseUserId, [FromQuery] string foodId, [FromQuery] int mealId)
+        [HttpDelete("DeleteFood")]
+        public IActionResult DeleteFood([FromQuery] string foodId, [FromQuery] int mealId)
         {
-            _userProfileRepository.DeleteFood(firebaseUserId, foodId, mealId);
+            _userProfileRepository.DeleteFood(foodId, mealId);
 
             return NoContent();
         }
 
+        //! http://localhost:3000/api/userprofile/EditFood?foodId=54b72bac55f4857d71b77ac5&mealId=1   newAmount: 2
+        [Authorize]
+        [HttpPatch("EditFood")]
+        public IActionResult EditFood([FromQuery] string foodId, [FromQuery] int mealId, [FromQuery] int newAmount)
+        {
+            _userProfileRepository.EditFood(foodId, mealId, newAmount);
+
+            return NoContent();
+        }
     }
 } 

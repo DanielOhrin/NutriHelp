@@ -70,7 +70,7 @@ CREATE TABLE [Ingredient] (
   [Id] nvarchar(100) PRIMARY KEY,
   [Name] nvarchar(100) NOT NULL,
   [CaloriesPerServing] int NOT NULL,
-  [Quantity] int NOT NULL,
+  [Quantity] decimal(18, 2) NOT NULL,
   [Measurement] nvarchar(50) NOT NULL
 )
 GO

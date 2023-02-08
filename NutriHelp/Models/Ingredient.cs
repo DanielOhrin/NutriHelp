@@ -15,7 +15,7 @@ namespace NutriHelp.Models
         public int CaloriesPerServing { get; set; }
 
         [Required]
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
 
         [Required]
         [StringLength(50)]

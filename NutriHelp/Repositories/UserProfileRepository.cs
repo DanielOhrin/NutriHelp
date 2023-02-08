@@ -248,7 +248,7 @@ namespace NutriHelp.Repositories
                                         Id = DbUtils.GetString(reader, "IngredientId"),
                                         Name = DbUtils.GetString(reader, "IngredientName"),
                                         CaloriesPerServing = DbUtils.GetInt(reader, "CaloriesPerServing"),
-                                        Quantity = DbUtils.GetInt(reader, "Quantity"),
+                                        Quantity = DbUtils.GetDecimal(reader, "Quantity"),
                                         Measurement = DbUtils.GetString(reader, "Measurement")
                                     }
                                 };
@@ -287,7 +287,7 @@ namespace NutriHelp.Repositories
             }
         }
 
-        public void DeleteFood(string firebaseUserId, string foodId, int mealId)
+        public void DeleteFood(string foodId, int mealId)
         {
             using (SqlConnection conn = Connection)
             {
@@ -298,12 +298,35 @@ namespace NutriHelp.Repositories
                     cmd.CommandText = @"
                         DELETE FROM dbo.MealIngredient
                         WHERE IngredientId = @IngredientId
-                        AND MealId = @MealId
+                            AND MealId = @MealId
                     ";
 
-                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
                     DbUtils.AddParameter(cmd, "@IngredientId", foodId);
                     DbUtils.AddParameter(cmd, "@MealId", mealId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void EditFood(string foodId, int mealId, int newAmount)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        UPDATE dbo.MealIngredient
+                        SET Amount = @NewAmount
+                        WHERE IngredientId = @IngredientId
+                            AND MealId = @MealId
+                    ";
+
+                    DbUtils.AddParameter(cmd, "@IngredientId", foodId);
+                    DbUtils.AddParameter(cmd, "@MealId", mealId);
+                    DbUtils.AddParameter(cmd, "@NewAmount", newAmount);
 
                     cmd.ExecuteNonQuery();
                 }

@@ -4,7 +4,7 @@ GO
 DROP PROCEDURE IF EXISTS dbo.AddFood
 GO
 
-CREATE PROCEDURE dbo.AddFood @FirebaseUserId NVARCHAR(28), @MealTypeId INT, @Amount INT, @IngredientId NVARCHAR(100), @Name NVARCHAR(100), @CaloriesPerServing INT, @Quantity INT, @Measurement NVARCHAR(50)
+CREATE PROCEDURE dbo.AddFood @FirebaseUserId NVARCHAR(28), @MealTypeId INT, @Amount INT, @IngredientId NVARCHAR(100), @Name NVARCHAR(100), @CaloriesPerServing INT, @Quantity DECIMAL(18, 2), @Measurement NVARCHAR(50)
 AS
 
 IF (SELECT COUNT(Id) FROM dbo.Ingredient WHERE Id = @IngredientId) = 0
