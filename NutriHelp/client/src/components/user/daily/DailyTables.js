@@ -33,7 +33,7 @@ const DailyTables = () => {
                 ingredient: {
                     id: formChoices.food.item_id,
                     name: formChoices.food.item_name,
-                    caloriesPerServing: formChoices.food.nf_calories,
+                    caloriesPerServing: Math.round(formChoices.food.nf_calories),
                     quantity: formChoices.food.nf_serving_size_qty ?? 1,
                     measurement: formChoices.food.nf_serving_size_unit ?? ""
                 }

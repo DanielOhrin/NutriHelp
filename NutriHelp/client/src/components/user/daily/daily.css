@@ -51,3 +51,13 @@
 .add-food-div > * {
     width: 100% !important;
 }
+
+@media screen and (max-width: 1000px) {
+    #user-daily-tables > div {
+        justify-content: center;
+    }
+    
+    .meal-table {
+        width: 75%
+    }
+}
