@@ -13,11 +13,12 @@ SELECT
 	(dbo.WaterGoal(up.[Weight]) - COALESCE(dus.WaterConsumed, 0)) WaterRemaining,
 	up.*,
 	ut.*,
-	COALESCE(dus.ExerciseMinutes, 0) ExerciseMinutes
+	COALESCE(dus.ExerciseMinutes, 0) ExerciseMinutes,
+	COALESCE(dus.WaterConsumed, 0) WaterConsumed
 FROM dbo.UserProfile up
 	LEFT JOIN dbo.UserType ut ON ut.Id = up.UserTypeId
-	LEFT JOIN dbo.DailyUserStats dus ON dus.UserProfileId = up.Id AND dus.[Date] > (SELECT CAST(CAST(GETDATE() AS DATE) AS DATETIME))
-	LEFT JOIN dbo.Meal m ON m.UserProfileId = up.Id AND m.[Date] > (SELECT CAST(CAST(GETDATE() AS DATE) AS DATETIME))
+	LEFT JOIN dbo.DailyUserStats dus ON dus.UserProfileId = up.Id AND dus.[Date] = (SELECT CAST(CAST(GETDATE() AS DATE) AS DATETIME))
+	LEFT JOIN dbo.Meal m ON m.UserProfileId = up.Id AND m.[Date] = (SELECT CAST(CAST(GETDATE() AS DATE) AS DATETIME))
 	LEFT JOIN dbo.MealIngredient mi ON mi.MealId = m.Id
 	LEFT JOIN dbo.Ingredient i ON i.Id = mi.IngredientId
 WHERE up.FirebaseId = @FirebaseUserId

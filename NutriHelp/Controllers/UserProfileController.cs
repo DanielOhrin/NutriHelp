@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using NutriHelp.Models;
@@ -68,11 +70,61 @@ namespace NutriHelp.Controllers
         }
 
         [Authorize]
+        [HttpGet("meals/{firebaseUserId}")]
+        public IActionResult GetMeals([FromRoute] string firebaseUserId)
+        {
+            List<Meal> meals = _userProfileRepository.GetMeals(firebaseUserId);
+            
+            if (meals.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(meals);
+        }
+
+        [Authorize]
         [HttpPost]
         public IActionResult Register([FromBody] UserProfile userProfile)
         {
             _userProfileRepository.Register(userProfile);
             return CreatedAtAction("Get", new { firebaseUserId = userProfile.FirebaseId }, userProfile);
+        }
+
+        [Authorize]
+        [HttpPatch("EditStat/{firebaseUserId}")]
+        public IActionResult EditStat([FromRoute] string firebaseUserId, [FromQuery] string field, [FromQuery] int value)
+        {
+            _userProfileRepository.EditStat(firebaseUserId, field, value);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost("AddFood/{firebaseUserId}")]
+        public IActionResult AddFood([FromRoute] string firebaseUserId, [FromBody] AddMealDTO dto)
+        {
+            _userProfileRepository.AddFood(firebaseUserId, dto);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteFood")]
+        public IActionResult DeleteFood([FromQuery] string foodId, [FromQuery] int mealId)
+        {
+            _userProfileRepository.DeleteFood(foodId, mealId);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPatch("EditFood")]
+        public IActionResult EditFood([FromQuery] string foodId, [FromQuery] int mealId, [FromQuery] int newAmount)
+        {
+            _userProfileRepository.EditFood(foodId, mealId, newAmount);
+
+            return NoContent();
         }
     }
 } 

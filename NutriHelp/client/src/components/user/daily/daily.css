@@ -1,0 +1,63 @@
+#user-daily-container {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+#user-daily-logo {
+    max-width: 10%;
+}
+
+#user-daily-stats-container {
+    margin-top: 1rem;
+}
+
+#user-daily-tables-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#user-daily-tables {
+    text-align: center;
+}
+
+#user-daily-tables > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.meal-table {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 45%;
+    margin-top: 1rem;
+}
+
+.foodOption {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.add-food-div {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.add-food-div > * {
+    width: 100% !important;
+}
+
+@media screen and (max-width: 1000px) {
+    #user-daily-tables > div {
+        justify-content: center;
+    }
+    
+    .meal-table {
+        width: 75%
+    }
+}
