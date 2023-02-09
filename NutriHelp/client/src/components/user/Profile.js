@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
-import { Button, Form, FormGroup, FormText, Input, Label, List, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from "reactstrap"
+import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 import logo from "../../assets/images/company_logo.png"
-import { getCurrentProfile } from "../../modules/userProfileManager"
+import { getCurrentProfile, editUser } from "../../modules/userProfileManager"
 import "./profile.css"
 
 const Profile = () => {
@@ -13,6 +13,7 @@ const Profile = () => {
 
     const resetState = useCallback(() => {
         getCurrentProfile(false).then(data => { data.weight = Math.floor(data.weight * 2.204623); data.height = Math.floor(data.height / 2.54); setProfile(data); setNewProfile(data) })
+        setIsEditing(false);
     }, [])
 
     useEffect(() => {
@@ -20,33 +21,22 @@ const Profile = () => {
     }, [resetState])
 
     const changeState = (e) => {
-        const copy = { ...profile }
+        const copy = { ...newProfile }
 
         copy[e.target.name] = isNaN(e.target.value) || e.target.value === "" ? e.target.value : parseInt(e.target.value)
 
-        setProfile(copy)
+        setNewProfile(copy)
     }
 
     const submitChanges = (e) => {
         e.preventDefault()
-        document.getElementById("register-submit-btn").disabled = true
-        document.getElementById("register-cancel-btn").disabled = true
 
         // Object for database
-        const userObj = { ...profile }
+        const userObj = { ...newProfile }
         userObj.height = Math.ceil(userObj.height *= 2.54) // Converts from inches to centimeters
         userObj.weight = Math.ceil(userObj.weight *= 0.453592) // Converts from lbs. to kg.
 
-        //! Implement register here!!!!!
-        // register(userObj, credentials.password)
-        //     .then(res => {
-        //         if (res.ok) {
-        //             setTimeout(() => navigate("/"), 250)
-        //         } else {
-        //             logout()
-        //             window.location.reload()
-        //         }
-        //     })
+        editUser(userObj).then(res => res.ok && resetState())
     }
 
     return (
@@ -56,48 +46,56 @@ const Profile = () => {
                 <h1>Profile</h1>
                 <article id="profile-article">
                     {
-                        isEditing
-                            ? <List>
-                                <ListGroup flush>
-                                    <ListGroupItem>
+                        !isEditing
+                            ? <>
+                                <div id="profile-div">
+                                    <div>
                                         <h5>Email</h5>
                                         {profile.email}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
+                                    </div>
+                                    <hr className="w-100" />
+                                    <div>
                                         <h5>Username</h5>
                                         {profile.username}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
+                                    </div>
+                                    <hr className="w-100" />
+                                    <div>
                                         <h5>Name</h5>
                                         Daniel Ohrin
-                                    </ListGroupItem>
-                                    <ListGroupItem>
+                                    </div>
+                                    <hr className="w-100" />
+                                    <div>
                                         <h5>Age</h5>
                                         {Math.floor((new Date() - new Date(profile.birthDate)) / 1000 / 60 / 60 / 24 / 365)}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
+                                    </div>
+                                    <hr className="w-100" />
+                                    <div>
                                         <h5>Gender</h5>
                                         {profile.gender}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
+                                    </div>
+                                    <hr className="w-100" />
+                                    <div>
                                         <h5>Weight</h5>
                                         {profile.weight} lbs.
-                                    </ListGroupItem>
-                                    <ListGroupItem>
+                                    </div>
+                                    <hr className="w-100" />
+                                    <div>
                                         <h5>Height</h5>
                                         {profile.height} in.
-                                    </ListGroupItem>
-                                    <ListGroupItem>
+                                    </div>
+                                    <hr className="w-100" />
+                                    <div>
                                         <h5>Activity Level</h5>
                                         {activityLevels[profile.activityLevel - 1]}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
+                                    </div>
+                                    <hr className="w-100" />
+                                    <div>
                                         <h5>Goal</h5>
                                         {weightGoals[profile.weightGoal - 1]}
-                                    </ListGroupItem>
-
-                                </ListGroup>
-                            </List> : <Form onSubmit={submitChanges}>
+                                    </div>
+                                </div>
+                                <Button id="profile-edit-btn" color="primary" className="mt-2" onClick={() => { setIsEditing(!isEditing) }}>Edit</Button>
+                            </> : <Form onSubmit={submitChanges}>
                                 <fieldset>
                                     <FormGroup>
                                         <Label htmlFor="firstName">First Name</Label>
@@ -105,7 +103,7 @@ const Profile = () => {
                                             autoComplete="first-name"
                                             name="firstName"
                                             type="text"
-                                            value={profile.firstName}
+                                            value={newProfile.firstName}
                                             maxLength={25}
                                             onChange={changeState}
                                         />
@@ -116,14 +114,14 @@ const Profile = () => {
                                             autoComplete="last-name"
                                             name="lastName"
                                             type="text"
-                                            value={profile.lastName}
+                                            value={newProfile.lastName}
                                             maxLength={25}
                                             onChange={changeState}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label htmlFor="gender">Gender</Label>
-                                        <select className="form-control" name="gender" onChange={changeState}>
+                                        <select className="form-control" name="gender" onChange={changeState} defaultValue={newProfile.gender}>
                                             <option value="" hidden>Select Gender</option>
                                             <option value="M">Male</option>
                                             <option value="F">Female</option>
@@ -135,7 +133,7 @@ const Profile = () => {
                                             name="birthDate"
                                             type="date"
                                             max={(new Date(new Date() - 18 * 365.25 * 24 * 60 * 60 * 1000)).toISOString().split("T")[0]}
-                                            value={profile.birthDate}
+                                            value={newProfile.birthDate.includes("T") ? newProfile.birthDate.split("T")[0] : newProfile.birthDate}
                                             onChange={changeState}
                                         />
                                     </FormGroup>
@@ -146,7 +144,7 @@ const Profile = () => {
                                             type="number"
                                             min={80}
                                             max={700}
-                                            value={profile.weight}
+                                            value={newProfile.weight}
                                             onChange={(e) => { if (e.target.value.trim() !== "" && parseInt(e.target.value) >= 80) changeState(e) }}
                                         />
                                     </FormGroup>
@@ -157,13 +155,13 @@ const Profile = () => {
                                             type="number"
                                             min={36}
                                             max={80}
-                                            value={profile.height}
+                                            value={newProfile.height}
                                             onChange={(e) => { if (e.target.value.trim() !== "" && parseInt(e.target.value) >= 36) changeState(e) }}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label htmlFor="activityLevel">Activity Level</Label>
-                                        <select className="form-control" name="activityLevel" onChange={changeState}>
+                                        <select className="form-control" name="activityLevel" onChange={changeState} defaultValue={newProfile.activityLevel}>
                                             <option value="" hidden>Select Level</option>
                                             <option value="1">Sedentary</option>
                                             <option value="2">Light/Average Exercise</option>
@@ -173,7 +171,7 @@ const Profile = () => {
                                     </FormGroup>
                                     <FormGroup>
                                         <Label htmlFor="weightGoal">Weight Goal</Label>
-                                        <select className="form-control" name="weightGoal" onChange={changeState}>
+                                        <select className="form-control" name="weightGoal" onChange={changeState} defaultValue={newProfile.weightGoal}>
                                             <option value="" hidden>Select Goal</option>
                                             <option value="1">Lose 2 lbs./week</option>
                                             <option value="2">Lose 1 lb./week</option>
@@ -183,8 +181,8 @@ const Profile = () => {
                                         </select>
                                     </FormGroup>
                                     <FormGroup>
-                                        <Button type="button" onClick={() => { setIsEditing(!isEditing) }}>Cancel</Button>
-                                        <Button className="mx-4" color="primary">Register</Button>
+                                        <Button className="w-45" type="button" onClick={() => { setIsEditing(!isEditing) }}>Cancel</Button>
+                                        <Button className="w-45 mx-4 px-4" color="primary">Save</Button>
                                     </FormGroup>
                                 </fieldset>
                             </Form >

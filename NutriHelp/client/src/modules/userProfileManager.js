@@ -82,4 +82,17 @@ export const editFood = (foodId, mealId, newAmount) => {
             },
         })
     })
-}   
+}
+
+export const editUser = (userProfile) => {
+    return getToken().then(token => {
+        return fetch(`${_apiUrl}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(userProfile)
+        })
+    })
+}

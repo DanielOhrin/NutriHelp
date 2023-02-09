@@ -1,4 +1,5 @@
-#user-profile-container {
+#user-profile-container,
+#profile-div {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -6,6 +7,32 @@
     min-height: 100%;
 }
 
+#profile-div {
+    align-items: flex-start;
+}
+
+#profile-article {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 0.5rem 1rem;
+    border: outset;
+}
+
 #profile-logo {
-    width: 15%;
+    max-width: 25%;
+}
+
+#profile-div > div {
+    margin: 4px;
+}
+
+#profile-edit-btn {
+    align-self: center;
+    width: 90%;
+}
+
+@media screen and (max-width: 750px) {
+    #profile-logo {
+        max-width: 40%;
+    }
 }
