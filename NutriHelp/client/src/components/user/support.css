@@ -1,0 +1,28 @@
+#support-container {
+    min-width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+#support-logo {
+    width: 238px;
+}
+
+#faqs-container {
+    width: 75%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+#faqs-container > div {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.faq-card {
+    max-width: 75%;
+}
