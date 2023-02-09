@@ -369,6 +369,99 @@ namespace NutriHelp.Repositories
             }
         }
 
+        public AllUsersDTO GetAll(int increment, int offset, int isActive, string firebaseUserId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT Id, FirstName, LastName, Email, (SELECT COUNT(Id) FROM dbo.UserProfile WHERE IsActive = @IsActive AND FirebaseId != @FirebaseUserId) Total
+                        FROM dbo.UserProfile
+                        WHERE IsActive = @IsActive AND FirebaseId != @FirebaseUserId
+                        ORDER BY LastName
+                        OFFSET @Offset ROWS FETCH NEXT @Increment ROWS ONLY
+                    ";
+
+                    DbUtils.AddParameter(cmd, "@Offset", offset);
+                    DbUtils.AddParameter(cmd, "@Increment", increment);
+                    DbUtils.AddParameter(cmd, "@IsActive", isActive);
+                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<UserProfile> userProfiles = new();
+                        AllUsersDTO newDTO = new();
+
+                        while (reader.Read())
+                        {
+                            UserProfile newUserProfile = new()
+                            {
+                                Id = DbUtils.GetInt(reader, "Id"),
+                                FirstName = DbUtils.GetString(reader, "FirstName"),
+                                LastName = DbUtils.GetString(reader, "LastName"),
+                                Email = DbUtils.GetString(reader, "Email")
+                            };
+
+                            userProfiles.Add(newUserProfile);
+
+                            if (newDTO.Total == 0)
+                            {
+                                newDTO.Total = DbUtils.GetInt(reader, "Total");
+                            }
+                        }
+
+                        newDTO.UserProfiles = userProfiles;
+                        return newDTO;
+                    }
+                }
+            }
+        }
+
+        public void Deactivate(int userId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        UPDATE dbo.UserProfile
+                        SET IsActive = 0
+                        WHERE Id = @Id
+                    ";
+
+                    DbUtils.AddParameter(cmd, "@Id", userId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }       
+        
+        public void Activate(int userId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        UPDATE dbo.UserProfile
+                        SET IsActive = 1
+                        WHERE Id = @Id
+                    ";
+
+                    DbUtils.AddParameter(cmd, "@Id", userId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         private static string SelectUserProfile(string alias)
         {
             if (alias != null)

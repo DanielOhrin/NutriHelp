@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import UsersTable from "./admin/UsersTable";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import Daily from "./user/daily/Daily";
@@ -13,7 +14,7 @@ export default function ApplicationViews({ isLoggedIn, role }) {
         <Route path="/">
           <Route
             index
-            element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
+            element={isLoggedIn ? role === "Admin" ? <UsersTable /> : role === "User" ? <Home /> : <></> : <Navigate to="/login" />}
           />
 
           <Route path="profile" element={<Profile />} />

@@ -52,12 +52,12 @@ export default function Header({ isLoggedIn, role }) {
             }
             {role === "Admin" &&
               <>
-                <NavItem>
+                {/* <NavItem>
                   <NavLink tag={RRNavLink} to="/users">Users</NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/tickets">Tickets</NavLink>
-                </NavItem>
+                </NavItem> */}
               </>
             }
             {isLoggedIn &&

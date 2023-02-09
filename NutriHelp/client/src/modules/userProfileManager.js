@@ -96,3 +96,36 @@ export const editUser = (userProfile) => {
         })
     })
 }
+
+export const adminGetUsers = (increment, offset, isActive) => {
+    return getToken().then(token => {
+        return fetch(`${_apiUrl}/all?increment=${increment}&offset=${offset}&isActive=${isActive}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }).then(res => res.json())
+}
+
+export const deactivateUser = (userId) => {
+    return getToken().then(token => {
+        return fetch(`${_apiUrl}/deactivate/${userId}`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    })
+}
+
+export const activateUser = (userId) => {
+    return getToken().then(token => {
+        return fetch(`${_apiUrl}/activate/${userId}`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    })
+}

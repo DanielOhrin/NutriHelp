@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using NutriHelp.Enums;
 using NutriHelp.Models;
 using NutriHelp.Repositories;
 
@@ -134,6 +136,74 @@ namespace NutriHelp.Controllers
             _userProfileRepository.EditProfile(userProfile);
 
             return NoContent();
+        }
+
+        [Authorize]
+        [HttpGet("all")]
+        public IActionResult GetAll([FromQuery] int increment, [FromQuery] int offset, [FromQuery] int isActive)
+        {
+            string UUID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            UserType userType = _userProfileRepository.GetUserType(UUID);
+
+            if (userType.Id != (int)UserTypeEnum.Admin)
+            {
+                return Unauthorized();
+            }
+
+            AllUsersDTO dto = _userProfileRepository.GetAll(increment, offset, isActive, UUID);
+
+            return Ok(dto);
+        }
+
+        [Authorize]
+        [HttpPatch("deactivate/{userId}")]
+        public IActionResult Deactivate([FromRoute] int userId)
+        {
+            string UUID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            UserType userType = _userProfileRepository.GetUserType(UUID);
+
+            if (userType.Id != (int)UserTypeEnum.Admin)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                _userProfileRepository.Deactivate(userId);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPatch("activate/{userId}")]
+        public IActionResult Activate([FromRoute] int userId)
+        {
+            string UUID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            UserType userType = _userProfileRepository.GetUserType(UUID);
+
+            if (userType.Id != (int)UserTypeEnum.Admin)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                _userProfileRepository.Activate(userId);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
     }
 } 
