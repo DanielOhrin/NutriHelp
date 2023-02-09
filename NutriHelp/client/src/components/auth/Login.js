@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { useNavigate, Link } from "react-router-dom";
-import { login, logout } from "../../modules/authManager";
+import { login } from "../../modules/authManager";
 import logo from "../../assets/images/company_logo.png"
 import "./auth.css"
 

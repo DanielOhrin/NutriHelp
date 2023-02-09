@@ -6,6 +6,7 @@ import Register from "./auth/Register";
 import Daily from "./user/daily/Daily";
 import Home from "./user/Home";
 import Profile from "./user/Profile";
+import Support from "./user/Support";
 
 export default function ApplicationViews({ isLoggedIn, role }) {
   return (
@@ -17,9 +18,9 @@ export default function ApplicationViews({ isLoggedIn, role }) {
             element={isLoggedIn ? role === "Admin" ? <UsersTable /> : role === "User" ? <Home /> : <></> : <Navigate to="/login" />}
           />
 
-          <Route path="profile" element={<Profile />} />
-          <Route path="daily" element={<Daily />} />
-
+          <Route path="profile" element={isLoggedIn && role === "User" ? <Profile /> : <></>} />
+          <Route path="daily" element={isLoggedIn && role === "User" ? <Daily /> : <></>} />
+          <Route path="support" element={isLoggedIn && role === "User" ? <Support /> : <></>} />
 
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
