@@ -8,7 +8,7 @@ const Support = () => {
         <article id="support-container">
             <img id="support-logo" src={logo} alt="Logo" />
             <h1>NutriHelp Support</h1>
-            <section id="faqs-container">{FAQs.map(faq => <div><FAQ Q={faq.Q} A={faq.A} /></div>)}</section>
+            <section id="faqs-container">{FAQs.map((faq, i) => <div key={`faq--${i}`}><FAQ Q={faq.Q} A={faq.A} /></div>)}</section>
             <section id="support-tickets-container">
                 <h2>Tickets</h2>
                 <p>Coming soon...</p>
