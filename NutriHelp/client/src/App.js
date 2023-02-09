@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Spinner } from 'reactstrap';
 import Header from "./components/Header";
 import ApplicationViews from "./components/ApplicationViews";
+import Footer from "./components/Footer"
 import { onLoginStatusChange, getRole, getCurrentUID } from "./modules/authManager";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
     <Router>
       <Header isLoggedIn={isLoggedIn} role={role} />
       <ApplicationViews isLoggedIn={isLoggedIn} role={role} />
+      <Footer />
     </Router>
   );
 }
