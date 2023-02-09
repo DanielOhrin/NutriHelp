@@ -169,7 +169,6 @@ export default function Register() {
     delete userObj.password
     delete userObj.confirmPassword
 
-    //! Implement register here!!!!!
     register(userObj, credentials.password)
       .then(res => {
         if (res.ok) {
@@ -289,7 +288,7 @@ export default function Register() {
                     className="register-input"
                     name="birthDate"
                     type="date"
-                    max={(new Date(new Date() - 18 * 365 * 24 * 60 * 60 * 1000)).toISOString().split("T")[0]}
+                    max={(new Date(new Date() - 18 * 365.25 * 24 * 60 * 60 * 1000)).toISOString().split("T")[0]}
                     value={profile.birthDate}
                     onChange={changeState}
                   />
@@ -341,7 +340,7 @@ export default function Register() {
                 </FormGroup>
                 <FormGroup>
                   <Button type="button" id="register-cancel-btn" onClick={() => { setModal(!modal) }}>Cancel</Button>
-                  <Button id="register-submit-btn" className="mx-4">Register</Button>
+                  <Button id="register-submit-btn" className="mx-4" color="primary">Register</Button>
                 </FormGroup>
               </fieldset>
             </Form >
