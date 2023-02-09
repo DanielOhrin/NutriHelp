@@ -46,7 +46,6 @@ export default function Login() {
                     autoFocus
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <FormText color="danger" id="login-validation" className="hidden">This account has been deactivated.</FormText>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="password">Password</Label>
