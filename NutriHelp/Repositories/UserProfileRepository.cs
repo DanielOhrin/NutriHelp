@@ -333,6 +333,42 @@ namespace NutriHelp.Repositories
             }
         }
 
+        public void EditProfile(UserProfile userProfile)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        UPDATE dbo.UserProfile
+                        SET FirstName = @FirstName,
+                            LastName = @LastName,
+                            Gender = @Gender,
+                            BirthDate = @BirthDate,
+                            Weight = @Weight,
+                            Height = @Height,
+                            ActivityLevel = @ActivityLevel,
+                            WeightGoal = @WeightGoal
+                        WHERE Id = @Id
+                    ";
+
+                    DbUtils.AddParameter(cmd, "@FirstName", userProfile.FirstName);
+                    DbUtils.AddParameter(cmd, "@LastName", userProfile.LastName);
+                    DbUtils.AddParameter(cmd, "@Gender", userProfile.Gender);
+                    DbUtils.AddParameter(cmd, "@BirthDate", userProfile.BirthDate);
+                    DbUtils.AddParameter(cmd, "@Weight", userProfile.Weight);
+                    DbUtils.AddParameter(cmd, "@Height", userProfile.Height);
+                    DbUtils.AddParameter(cmd, "@ActivityLevel", userProfile.ActivityLevel);
+                    DbUtils.AddParameter(cmd, "@WeightGoal", userProfile.WeightGoal);
+                    DbUtils.AddParameter(cmd, "@Id", userProfile.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         private static string SelectUserProfile(string alias)
         {
             if (alias != null)

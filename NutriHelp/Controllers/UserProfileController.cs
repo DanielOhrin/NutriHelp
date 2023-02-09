@@ -126,5 +126,14 @@ namespace NutriHelp.Controllers
 
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPut]
+        public IActionResult EditProfile([FromBody] UserProfile userProfile)
+        {
+            _userProfileRepository.EditProfile(userProfile);
+
+            return NoContent();
+        }
     }
 } 
