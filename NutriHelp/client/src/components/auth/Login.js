@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { useNavigate, Link } from "react-router-dom";
-import { login } from "../../modules/authManager";
+import { login, logout } from "../../modules/authManager";
 import logo from "../../assets/images/company_logo.png"
 import "./auth.css"
 
@@ -14,7 +14,13 @@ export default function Login() {
   const loginSubmit = (e) => {
     e.preventDefault();
     login(email, password)
-      .then(() => navigate("/"))
+      .then(statusCode => {
+        if (statusCode === 204) {
+          navigate("/")
+        } else {
+          alert("This account has been disabled")
+        }
+      })
       .catch(() => alert("Invalid email or password"));
   };
 

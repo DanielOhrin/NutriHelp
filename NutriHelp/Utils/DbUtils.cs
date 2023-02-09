@@ -24,6 +24,23 @@ namespace NutriHelp.Utils
             return reader.GetString(ordinal);
         }
 
+        public static bool GetBool(SqlDataReader reader, string column)
+        {
+            return reader.GetBoolean(reader.GetOrdinal(column));
+        }
+
+        public static bool? GetNullableBool(SqlDataReader reader, string column)
+        {
+            int ordinal = reader.GetOrdinal(column);
+
+            if (reader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+
+            return reader.GetBoolean(ordinal);
+        }
+
         public static int GetInt(SqlDataReader reader, string column)
         {
             return reader.GetInt32(reader.GetOrdinal(column));

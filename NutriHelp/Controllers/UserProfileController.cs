@@ -27,14 +27,17 @@ namespace NutriHelp.Controllers
         [HttpGet("DoesUserExist/{firebaseUserId}")]
         public IActionResult DoesUserExist([FromRoute] string firebaseUserId)
         {
-            bool userExists = _userProfileRepository.DoesUserExist(firebaseUserId);
+            bool? userExists = _userProfileRepository.DoesUserExist(firebaseUserId);
 
-            if (!userExists)
+            switch (userExists)
             {
-                return NotFound();
+                case true:
+                    return NoContent();
+                case false:
+                    return Conflict();
+                case null:
+                    return NotFound();
             }
-
-            return NoContent();
         }
 
         [Authorize]

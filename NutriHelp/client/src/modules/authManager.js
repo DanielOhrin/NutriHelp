@@ -4,13 +4,14 @@ import "firebase/compat/auth";
 const _apiUrl = "/api/userprofile";
 
 const _doesUserExist = (firebaseUserId) => {
-  return getToken().then((token) =>
-    fetch(`${_apiUrl}/DoesUserExist/${firebaseUserId}`, {
+  return getToken().then((token) => {
+    return fetch(`${_apiUrl}/DoesUserExist/${firebaseUserId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }).then(res => res.ok));
+    })
+  })
 };
 
 const _saveUser = (userProfile) => {
@@ -43,13 +44,16 @@ export const getCurrentUID = () => firebase.auth().currentUser.uid
 export const login = (email, pw) => {
   return firebase.auth().signInWithEmailAndPassword(email, pw)
     .then((signInResponse) => _doesUserExist(signInResponse.user.uid))
-    .then((doesUserExist) => {
-      if (!doesUserExist) {
+    .then((res) => {
+      if (res.status !== 204) {
 
         // If we couldn't find the user in our app's database, we should logout of firebase
         logout();
-
-        throw new Error("Something's wrong. The user exists in firebase, but not in the application database.");
+        if (res.status === 404) {
+          throw new Error("Something's wrong. The user exists in firebase, but not in the application database.");
+        }
+      } else {
+        return res.status
       }
     }).catch(err => {
       console.error(err);
