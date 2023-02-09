@@ -9,8 +9,8 @@
 }
 
 #login-container {
-  margin-top: 5rem;
   align-items: flex-start;
+  max-height: 80%;
 }
 
 #register-box, #register-2-box, #login-box {
