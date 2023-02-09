@@ -17,7 +17,7 @@ namespace NutriHelp.Repositories
     {
         public UserProfileRepository(IConfiguration configuration) : base(configuration) { }
 
-        public bool DoesUserExist(string firebaseUserId)
+        public bool? DoesUserExist(string firebaseUserId)
         {
             using (SqlConnection conn = Connection)
             {
@@ -26,14 +26,24 @@ namespace NutriHelp.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT COUNT(Id)
+                        SELECT IsActive
                         FROM dbo.UserProfile
                         WHERE FirebaseId = @FirebaseUserId
                     ";
 
                     DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
 
-                    return (int)cmd.ExecuteScalar() == 1;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        bool? isActive = null;
+                        
+                        if (reader.Read())
+                        {
+                            isActive = DbUtils.GetNullableBool(reader, "IsActive");
+                        }
+
+                        return isActive;
+                    }
                 }
             }
         }
