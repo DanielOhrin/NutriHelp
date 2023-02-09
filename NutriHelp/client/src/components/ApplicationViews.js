@@ -4,6 +4,7 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import Daily from "./user/daily/Daily";
 import Home from "./user/Home";
+import Profile from "./user/Profile";
 
 export default function ApplicationViews({ isLoggedIn, role }) {
   return (
@@ -15,7 +16,9 @@ export default function ApplicationViews({ isLoggedIn, role }) {
             element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
           />
 
+          <Route path="profile" element={<Profile />} />
           <Route path="daily" element={<Daily />} />
+
 
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
