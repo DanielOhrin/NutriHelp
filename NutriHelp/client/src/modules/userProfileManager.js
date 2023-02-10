@@ -50,7 +50,7 @@ export const addFood = (DTO) => {
     const firebaseId = getCurrentUID()
 
     return getToken().then(token => {
-        return fetch(`${_apiUrl}/AddFood/${firebaseId}`, {
+        return fetch(`${_apiUrl}/food/?firebaseUserId=${firebaseId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -63,7 +63,7 @@ export const addFood = (DTO) => {
 
 export const deleteFood = (foodId, mealId) => {
     return getToken().then(token => {
-        return fetch(`${_apiUrl}/DeleteFood?foodId=${foodId}&mealId=${mealId}`, {
+        return fetch(`${_apiUrl}/food?foodId=${foodId}&mealId=${mealId}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${token}`
@@ -74,7 +74,7 @@ export const deleteFood = (foodId, mealId) => {
 
 export const editFood = (foodId, mealId, newAmount) => {
     return getToken().then(token => {
-        return fetch(`${_apiUrl}/EditFood?foodId=${foodId}&mealId=${mealId}&newAmount=${newAmount}`, {
+        return fetch(`${_apiUrl}/food?foodId=${foodId}&mealId=${mealId}&newAmount=${newAmount}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

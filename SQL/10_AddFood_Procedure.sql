@@ -18,14 +18,33 @@ ELSE
 			SELECT mi.Id
 			FROM dbo.MealIngredient mi
 			LEFT JOIN dbo.Meal m ON m.Id = mi.MealId AND m.MealTypeId = @MealTypeId
-			WHERE mi.IngredientId = @IngredientId AND m.[Date] = CAST(CAST(GETDATE() AS DATE) AS DATETIME)
+			WHERE mi.IngredientId = @IngredientId 
+			AND m.[Date] = CAST(CAST(GETDATE() AS DATE) AS DATETIME)
+			AND m.UserProfileId = (
+				SELECT Id
+				FROM UserProfile
+				WHERE FirebaseId = @FirebaseUserId
+			)
 		)
 
 		IF @ExistingMealIngredient IS NOT NULL
 			BEGIN
+				DECLARE @UserProfileId INT = (
+					SELECT Id
+					FROM dbo.UserProfile
+					WHERE FirebaseId = @FirebaseUserId
+				)
+
 				UPDATE dbo.MealIngredient
 				SET Amount += @Amount
 				WHERE Id = @ExistingMealIngredient
+				AND MealId = (
+					SELECT Id
+					FROM dbo.Meal
+					WHERE [Date] = CAST(CAST(GETDATE() AS DATE) AS DATETIME)
+					AND UserProfileId = @UserProfileId
+					AND MealTypeId = @MealTypeId
+				)
 
 				RETURN
 			END
@@ -34,12 +53,12 @@ ELSE
 DECLARE @MealId INT = (
 	SELECT Id
 	FROM dbo.Meal
-	WHERE [Date] = CAST(CAST(GETDATE() AS DATE) AS DATETIME) AND MealTypeId = @MealTypeId
+	WHERE [Date] = CAST(CAST(GETDATE() AS DATE) AS DATETIME) AND MealTypeId = @MealTypeId AND UserProfileId = @UserProfileId
 )
 
 IF @MealId IS NULL
 	BEGIN
-		DECLARE @UserProfileId INT = (SELECT Id FROM UserProfile WHERE FirebaseId = @FirebaseUserId)
+		SET @UserProfileId = (SELECT Id FROM UserProfile WHERE FirebaseId = @FirebaseUserId)
 		INSERT INTO dbo.Meal (UserProfileId, MealTypeId)	
 		VALUES (@UserProfileId, @MealTypeId)
 
