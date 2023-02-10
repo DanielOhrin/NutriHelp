@@ -84,6 +84,6 @@ _This view is paginated, and the Admin can choose how many to see per page._
 
 https://user-images.githubusercontent.com/110187145/217970280-51ce7915-89c2-4ca1-8cdf-e7c5aaba7b00.mp4
 
-_May be updated a voice-guided tour in the future._  
+_May be updated to a voice-guided tour in the future._  
   
   I am aware of the massive security risk that debouncing email and username gives. I would not host the website publicly with that feature. It was so I could learn debouncing, and React's `useRef`.
