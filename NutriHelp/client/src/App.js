@@ -16,8 +16,10 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      getRole(getCurrentUID())
-        .then(userType => setRole(userType.name))
+      setTimeout(() => {
+        getRole(getCurrentUID())
+          .then(userType => setRole(userType.name))
+      }, 200)
     } else {
       setRole("")
     }

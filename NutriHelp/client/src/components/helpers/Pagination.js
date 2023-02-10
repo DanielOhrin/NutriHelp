@@ -1,8 +1,8 @@
-import { ButtonGroup, PaginationLink } from "reactstrap"
+import { PaginationLink, Pagination as PaginationContainer } from "reactstrap"
 
 const Pagination = ({ total, offset, increment, setOffset }) => {
     return (
-        <ButtonGroup>
+        <PaginationContainer>
             {
                 offset > 0 &&
                 <PaginationLink onClick={() => setOffset(offset - increment)}>Previous</PaginationLink>
@@ -11,7 +11,7 @@ const Pagination = ({ total, offset, increment, setOffset }) => {
                 total > offset + increment &&
                 <PaginationLink onClick={() => setOffset(offset + increment)}>Next</PaginationLink>
             }
-        </ButtonGroup>
+        </PaginationContainer>
     )
 }
 

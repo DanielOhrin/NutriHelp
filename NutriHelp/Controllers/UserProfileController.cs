@@ -22,6 +22,29 @@ namespace NutriHelp.Controllers
             _userProfileRepository = userProfileRepo;
         }
 
+        [Authorize]
+        [HttpPost]
+        public IActionResult Register([FromBody] UserProfile userProfile)
+        {
+            _userProfileRepository.Register(userProfile);
+            return CreatedAtAction("Get", new { firebaseUserId = userProfile.FirebaseId }, userProfile);
+        }
+
+        [Authorize]
+        [HttpPut]
+        public IActionResult EditProfile([FromBody] UserProfile userProfile)
+        {
+            _userProfileRepository.EditProfile(userProfile);
+
+            return NoContent();
+        }
+
+        [HttpGet("isDuplicateData")]
+        public IActionResult IsDuplicateData([FromQuery] string field, [FromQuery] string value)
+        {
+            return Ok(_userProfileRepository.IsDuplicate(field, value));
+        }
+
         //! GET: api/UserProfile/DoesUserExist/:id
         [Authorize]
         [HttpGet("DoesUserExist/{firebaseUserId}")]
@@ -54,11 +77,6 @@ namespace NutriHelp.Controllers
             return Ok(userType);
         }
 
-        [HttpGet("isDuplicateData")]
-        public IActionResult IsDuplicateData([FromQuery] string field, [FromQuery] string value)
-        {
-            return Ok(_userProfileRepository.IsDuplicate(field, value));
-        }
 
         [Authorize]
         [HttpGet("{firebaseUserId}")]
@@ -72,73 +90,6 @@ namespace NutriHelp.Controllers
             }
 
             return Ok(userProfile);
-        }
-
-        [Authorize]
-        [HttpGet("meals/{firebaseUserId}")]
-        public IActionResult GetMeals([FromRoute] string firebaseUserId)
-        {
-            List<Meal> meals = _userProfileRepository.GetMeals(firebaseUserId);
-            
-            if (meals.Count == 0)
-            {
-                return NoContent();
-            }
-
-            return Ok(meals);
-        }
-
-        [Authorize]
-        [HttpPost]
-        public IActionResult Register([FromBody] UserProfile userProfile)
-        {
-            _userProfileRepository.Register(userProfile);
-            return CreatedAtAction("Get", new { firebaseUserId = userProfile.FirebaseId }, userProfile);
-        }
-
-        [Authorize]
-        [HttpPatch("EditStat/{firebaseUserId}")]
-        public IActionResult EditStat([FromRoute] string firebaseUserId, [FromQuery] string field, [FromQuery] int value)
-        {
-            _userProfileRepository.EditStat(firebaseUserId, field, value);
-
-            return NoContent();
-        }
-
-        [Authorize]
-        [HttpPost("AddFood/{firebaseUserId}")]
-        public IActionResult AddFood([FromRoute] string firebaseUserId, [FromBody] AddMealDTO dto)
-        {
-            _userProfileRepository.AddFood(firebaseUserId, dto);
-
-            return NoContent();
-        }
-
-        [Authorize]
-        [HttpDelete("DeleteFood")]
-        public IActionResult DeleteFood([FromQuery] string foodId, [FromQuery] int mealId)
-        {
-            _userProfileRepository.DeleteFood(foodId, mealId);
-
-            return NoContent();
-        }
-
-        [Authorize]
-        [HttpPatch("EditFood")]
-        public IActionResult EditFood([FromQuery] string foodId, [FromQuery] int mealId, [FromQuery] int newAmount)
-        {
-            _userProfileRepository.EditFood(foodId, mealId, newAmount);
-
-            return NoContent();
-        }
-
-        [Authorize]
-        [HttpPut]
-        public IActionResult EditProfile([FromBody] UserProfile userProfile)
-        {
-            _userProfileRepository.EditProfile(userProfile);
-
-            return NoContent();
         }
 
         [Authorize]
@@ -181,7 +132,7 @@ namespace NutriHelp.Controllers
                 return BadRequest();
             }
 
-            return Ok();
+            return NoContent();
         }
 
         [Authorize]
@@ -206,7 +157,58 @@ namespace NutriHelp.Controllers
                 return BadRequest();
             }
 
-            return Ok();
+            return NoContent();
         }
+
+        [Authorize]
+        [HttpPatch("EditStat/{firebaseUserId}")]
+        public IActionResult EditStat([FromRoute] string firebaseUserId, [FromQuery] string field, [FromQuery] int value)
+        {
+            _userProfileRepository.EditStat(firebaseUserId, field, value);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpGet("meals/{firebaseUserId}")]
+        public IActionResult GetMeals([FromRoute] string firebaseUserId)
+        {
+            List<Meal> meals = _userProfileRepository.GetMeals(firebaseUserId);
+            
+            if (meals.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(meals);
+        }
+
+        [Authorize]
+        [HttpPost("food")]
+        public IActionResult AddFood([FromQuery] string firebaseUserId, [FromBody] AddMealDTO dto)
+        {
+            _userProfileRepository.AddFood(firebaseUserId, dto);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("food")]
+        public IActionResult DeleteFood([FromQuery] string foodId, [FromQuery] int mealId)
+        {
+            _userProfileRepository.DeleteFood(foodId, mealId);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPatch("food")]
+        public IActionResult EditFood([FromQuery] string foodId, [FromQuery] int mealId, [FromQuery] int newAmount)
+        {
+            _userProfileRepository.EditFood(foodId, mealId, newAmount);
+
+            return NoContent();
+        }
+
     }
 } 
