@@ -1,8 +1,8 @@
 # NutriHelp
 
 This is my solo capstone project for NSS.  
-It is a calorie-tracking app that allows users to track their calories and other health info daily.  
-I decided to make an app like this because I am passionate about health and fitness, so I was excited to develop it.
+It is a calorie-tracking application that allows users to track their calories and other health information daily.  
+I decided to make this application because I am passionate about health and fitness.
 
 ## Stack
 
@@ -28,7 +28,7 @@ I decided to make an app like this because I am passionate about health and fitn
 ## API
 
 ![Photo of ERD](./docs/mvp-erd.png)  
-The above photo is a visual representation of the Database.  
+This is a visual representation of the Database.  
   
 ### Documentation
 
@@ -36,23 +36,23 @@ A link to the documentation for the API can be found [here](./docs/api-documenta
 
 # Installation
 
-## Step 1
+### Step 1
 
 Clone the repository from command line  
 
-## Step 2
+### Step 2
 
 Change to the **`client`** directory, and type `npm install`  
 
-## Step 3
+### Step 3
 
 Run all of the sql scripts **IN ORDER**  
 
-## Step 4
+### Step 4
 
 Open the `.sln` file in Visual Studio and run the **`NutriHelp`** profile  
 
-## Step 5
+### Step 5
 
 Back in the **`client`** directory, type `npm start`
 
@@ -60,14 +60,15 @@ Back in the **`client`** directory, type `npm start`
 
 ## Purpose & Motivation
 
-Throughout the year of 2022 I managed to lose 100 lbs. (from 300). The difference in my life is outstanding and I have a great appreciation for health and fitness now.  
-Coming up with **`NutriHelp`** was a no-brainer, and I enjoyed coding it every step of the way.
+Throughout the year 2022, I managed to lose 100 lbs. My starting weight was 300. The difference in my life is outstanding and I have a great appreciation for health and fitness now.  
+Designing and developing **`NutriHelp`** was an easy decision, and I enjoyed coding it every step of the way.
 
 ## How does it work?
 
 ## Users
 
-When the user first enters the website, they are prompted to Login or Register. The registration form has two parts: credentials & other user info. I split up the form to improve UX.  
+When the user first enters the website, they are prompted to Register or Login. The registration form has two parts: credentials & other user information. I split up the form to improve UX.  
+There is a also a random positive message displayed out of 50 possible messages, and a button to navigate users to a detailed view.  
   
 Once logged in, the user sees their [Daily Rundown](https://prnt.sc/RffrwWVEpw_D), which consists of a Calorie & Water goal, and any logged exercise for the day. Below that, there is a random positive message (out of 50), and a button to navigate them to a detailed view.  
 
@@ -86,4 +87,4 @@ https://user-images.githubusercontent.com/110187145/217970280-51ce7915-89c2-4ca1
 
 _May be updated to a voice-guided tour in the future._  
   
-  I am aware of the massive security risk that debouncing email and username gives. I would not host the website publicly with that feature. It was so I could learn debouncing, and React's `useRef`.
+Please note: I am aware of the security risk of debouncing emails and usernames. I would not host the website publicly with that feature. I implemented it so I could learn debouncing, and React's `useRef` hook.
