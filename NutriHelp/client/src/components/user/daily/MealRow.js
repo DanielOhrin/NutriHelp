@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { Button, Input, Label, List, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader } from "reactstrap"
-import { deleteFood, editFood } from "../../../modules/userProfileManager"
+import { deleteFood, editFood } from "../../../modules/mealManager"
 
 const MealRow = ({ ingredient, resetState }) => {
     const [editModal, setEditModal] = useState(false),

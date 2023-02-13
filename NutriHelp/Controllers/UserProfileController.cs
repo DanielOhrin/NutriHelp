@@ -34,7 +34,7 @@ namespace NutriHelp.Controllers
         [HttpPut]
         public IActionResult EditProfile([FromBody] UserProfile userProfile)
         {
-            _userProfileRepository.EditProfile(userProfile);
+            _userProfileRepository.Edit(userProfile);
 
             return NoContent();
         }
@@ -93,19 +93,17 @@ namespace NutriHelp.Controllers
         }
 
         [Authorize]
-        [HttpGet("all")]
+        [HttpGet]
         public IActionResult GetAll([FromQuery] int increment, [FromQuery] int offset, [FromQuery] int isActive)
         {
-            string UUID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            UserType userType = _userProfileRepository.GetUserType(UUID);
+            UserType userType = _userProfileRepository.GetUserType(CurrentUID);
 
             if (userType.Id != (int)UserTypeEnum.Admin)
             {
                 return Unauthorized();
             }
 
-            AllUsersDTO dto = _userProfileRepository.GetAll(increment, offset, isActive, UUID);
+            AllUsersDTO dto = _userProfileRepository.GetAll(increment, offset, isActive, CurrentUID);
 
             return Ok(dto);
         }
@@ -114,9 +112,7 @@ namespace NutriHelp.Controllers
         [HttpPatch("deactivate/{userId}")]
         public IActionResult Deactivate([FromRoute] int userId)
         {
-            string UUID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            UserType userType = _userProfileRepository.GetUserType(UUID);
+            UserType userType = _userProfileRepository.GetUserType(CurrentUID);
 
             if (userType.Id != (int)UserTypeEnum.Admin)
             {
@@ -139,9 +135,7 @@ namespace NutriHelp.Controllers
         [HttpPatch("activate/{userId}")]
         public IActionResult Activate([FromRoute] int userId)
         {
-            string UUID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            UserType userType = _userProfileRepository.GetUserType(UUID);
+            UserType userType = _userProfileRepository.GetUserType(CurrentUID);
 
             if (userType.Id != (int)UserTypeEnum.Admin)
             {
@@ -169,46 +163,35 @@ namespace NutriHelp.Controllers
             return NoContent();
         }
 
+        private string CurrentUID => User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //! Moved Actions
         [Authorize]
-        [HttpGet("meals/{firebaseUserId}")]
+        [HttpGet("meal/{firebaseUserId}")]
         public IActionResult GetMeals([FromRoute] string firebaseUserId)
         {
-            List<Meal> meals = _userProfileRepository.GetMeals(firebaseUserId);
-            
-            if (meals.Count == 0)
-            {
-                return NoContent();
-            }
-
-            return Ok(meals);
+            return RedirectPermanent("/api/meal/");
         }
 
         [Authorize]
         [HttpPost("food")]
         public IActionResult AddFood([FromQuery] string firebaseUserId, [FromBody] AddMealDTO dto)
         {
-            _userProfileRepository.AddFood(firebaseUserId, dto);
-
-            return NoContent();
+            return RedirectPermanent("/api/meal/");
         }
 
         [Authorize]
         [HttpDelete("food")]
         public IActionResult DeleteFood([FromQuery] string foodId, [FromQuery] int mealId)
         {
-            _userProfileRepository.DeleteFood(foodId, mealId);
-
-            return NoContent();
+            return RedirectPermanent("/api/meal/");
         }
 
         [Authorize]
         [HttpPatch("food")]
         public IActionResult EditFood([FromQuery] string foodId, [FromQuery] int mealId, [FromQuery] int newAmount)
         {
-            _userProfileRepository.EditFood(foodId, mealId, newAmount);
-
-            return NoContent();
+            return RedirectPermanent("/api/meal/");
         }
-
     }
 } 

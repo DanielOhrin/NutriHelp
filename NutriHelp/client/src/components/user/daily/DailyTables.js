@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import Select from "react-select"
 import { Button, Form, Input, InputGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
-import { addFood, getMeals } from "../../../modules/userProfileManager"
+import { addFood, getMeals } from "../../../modules/mealManager"
 import ApiSearch from "./ApiSearch"
 import MealTable from "./MealTable"
 
