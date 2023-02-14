@@ -1,11 +1,22 @@
 # NutriHelp Documentation
 
-The base route for all possible actions is `/api/userprofile`  
 All API calls must include the header `Authorization: Bearer {firebaseToken}`  
-  
-_All instances of `firebaseUserId` are referring to the resource you are editing._
+_All instances of `firebaseUserId` are referring to the resource you are editing._  
 
+<hr />  
+
+## **Base: `/api/userprofile`**  
+  
 ## /
+
+### `GET`
+
+`query:` increment(int) <-- Amount of rows to return  
+`query:` offset(int)  <-- Amount to offset results by  
+`query:` isActive(int) <-- Active or Inactive accounts  
+  
+`Response:` 200  
+`Response Body`: AllUsersDTO <-- userProfiles(array of UserProfile objects) & total(int)
 
 ### `POST`
 
@@ -55,18 +66,7 @@ _This route is not suitable for production. I created it to learn debouncing._
 `Response:` 200  
 `Response Body:` UserProfile object
 
-## /all
-
-### `GET`
-
-`query:` increment(int) <-- Amount of rows to return  
-`query:` offset(int)  <-- Amount to offset results by  
-`query:` isActive(int) <-- Active or Inactive accounts  
-  
-`Response:` 200  
-`Response Body`: AllUsersDTO <-- userProfiles(array of UserProfile objects) & total(int)
-
-## /deactivate/:firebaseUserId
+## /deactivate/:userId
 
 _Admin protected._
 
@@ -74,7 +74,7 @@ _Admin protected._
 
 `Response:` 204
 
-## /activate/:firebaseUserId
+## /activate/:userId
 
 _Admin protected._
 
@@ -89,16 +89,18 @@ _Admin protected._
 `query:` field(string)  
 `query:` value(int)  
   
-`Response:` 204
+`Response:` 204  
 
-## /meals/:firebaseUserId
+<hr />  
+
+## **Base: `/api/meal`**
+
+## /
 
 ### `GET`
 
 `Response:` 200  
 `Response Body:` Array of Meal objects
-
-## /food
 
 ### `POST`
 
