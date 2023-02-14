@@ -16,7 +16,7 @@ const UserRow = ({ profile, resetState, isActive }) => {
             <td>{profile.email}</td>
             <td>
                 {
-                    isActive === 1
+                    isActive
                         ? <>
                             <Button color="danger" onClick={() => setModal(!modal)}>Deactivate</Button>
                             <Modal isOpen={modal} toggle={() => setModal(!modal)}>

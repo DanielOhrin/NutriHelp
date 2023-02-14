@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -71,7 +70,7 @@ namespace NutriHelp.Controllers
 
             if (userType == null)
             {
-                return BadRequest();
+                return NoContent();
             }
 
             return Ok(userType);
@@ -94,7 +93,7 @@ namespace NutriHelp.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult GetAll([FromQuery] int increment, [FromQuery] int offset, [FromQuery] int isActive)
+        public IActionResult GetAll([FromQuery] int increment, [FromQuery] int offset, [FromQuery] bool isActive)
         {
             UserType userType = _userProfileRepository.GetUserType(CurrentUID);
 

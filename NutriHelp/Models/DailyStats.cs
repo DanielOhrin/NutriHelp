@@ -1,4 +1,6 @@
-﻿namespace NutriHelp.Models
+﻿using System;
+
+namespace NutriHelp.Models
 {
     public class DailyStats
     {
@@ -8,5 +10,6 @@
         public int WaterConsumed { get; set; }
         public int WaterRemaining { get; set; }
         public int ExerciseMinutes { get; set; }
+        public DateTime Date { get; set; }
     }
 }

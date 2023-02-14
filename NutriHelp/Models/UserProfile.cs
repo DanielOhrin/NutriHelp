@@ -53,5 +53,7 @@ namespace NutriHelp.Models
         public int UserTypeId { get; set; }
         public UserType UserType { get; set; }
         public DailyStats DailyStats { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

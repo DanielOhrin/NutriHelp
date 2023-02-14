@@ -10,7 +10,7 @@ const UsersTable = () => {
         [offset, setOffset] = useState(0),
         [total, setTotal] = useState(0),
         [increment, setIncrement] = useState(10),
-        [isActive, setIsActive] = useState(1),
+        [isActive, setIsActive] = useState(true),
         [dropdownOpen, setDropdownOpen] = useState(false),
         [newIncrement, setNewIncrement] = useState(10)
 
@@ -34,8 +34,8 @@ const UsersTable = () => {
             <Dropdown isOpen={dropdownOpen} toggle={() => setDropdownOpen(!dropdownOpen)} direction={"down"}>
                 <DropdownToggle caret color="primary">Status Filter</DropdownToggle>
                 <DropdownMenu>
-                    <DropdownItem onClick={() => setIsActive(1)}>Active</DropdownItem>
-                    <DropdownItem onClick={() => setIsActive(0)}>Not Active</DropdownItem>
+                    <DropdownItem onClick={() => setIsActive(true)}>Active</DropdownItem>
+                    <DropdownItem onClick={() => setIsActive(false)}>Not Active</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
             <Table>

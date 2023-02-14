@@ -175,6 +175,7 @@ namespace NutriHelp.Repositories
                                 userProfile.DailyStats.WaterRemaining = DbUtils.GetInt(reader, "WaterRemaining");
                                 userProfile.DailyStats.ExerciseMinutes = DbUtils.GetInt(reader, "ExerciseMinutes");
                                 userProfile.DailyStats.WaterConsumed = DbUtils.GetInt(reader, "WaterConsumed");
+                                userProfile.DailyStats.Date = DbUtils.GetNullableDateTime(reader, "Date");
                             }
                         }
 
@@ -240,7 +241,7 @@ namespace NutriHelp.Repositories
             }
         }
 
-        public AllUsersDTO GetAll(int increment, int offset, int isActive, string firebaseUserId)
+        public AllUsersDTO GetAll(int increment, int offset, bool isActive, string firebaseUserId)
         {
             using (SqlConnection conn = Connection)
             {
@@ -256,9 +257,16 @@ namespace NutriHelp.Repositories
                         OFFSET @Offset ROWS FETCH NEXT @Increment ROWS ONLY
                     ";
 
+                    cmd.Parameters.Add(new SqlParameter()
+                    {
+                        ParameterName = "@IsActive",
+                        Value = isActive,
+                        SqlDbType = SqlDbType.Bit,
+                        IsNullable = false
+                    });
+
                     DbUtils.AddParameter(cmd, "@Offset", offset);
                     DbUtils.AddParameter(cmd, "@Increment", increment);
-                    DbUtils.AddParameter(cmd, "@IsActive", isActive);
                     DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -337,11 +345,11 @@ namespace NutriHelp.Repositories
         {
             if (alias != null)
             {
-                return string.Format("{0}.Id, {0}.FirebaseId, {0}.Email, {0}.Username, {0}.FirstName, {0}.LastName, {0}.Gender, {0}.BirthDate, {0}.Weight, {0}.Height, {0}.ActivityLevel, {0}.WeightGoal, {0}.DateCreated, {0}.UserTypeId", alias);
+                return string.Format("{0}.Id, {0}.FirebaseId, {0}.Email, {0}.Username, {0}.FirstName, {0}.LastName, {0}.Gender, {0}.BirthDate, {0}.Weight, {0}.Height, {0}.ActivityLevel, {0}.WeightGoal, {0}.DateCreated, {0}.UserTypeId, {0}.IsActive", alias);
             }
             else
             {
-                return "Id, FirebaseId, Email, Username, FirstName, LastName, Gender, BirthDate, Weight, Height, ActivityLevel, WeightGoal, DateCreated, UserTypeId";
+                return "Id, FirebaseId, Email, Username, FirstName, LastName, Gender, BirthDate, Weight, Height, ActivityLevel, WeightGoal, DateCreated, UserTypeId, IsActive";
             }
         }
 

@@ -13,7 +13,7 @@ namespace NutriHelp.Repositories
         UserProfile GetByFirebaseId(string firebaseUserId, bool? showDetails);
         void EditStat(string firebaseUserId, string field, int value);
         void Edit(UserProfile userProfile);
-        AllUsersDTO GetAll(int increment, int offset, int isActive, string firebaseUserId);
+        AllUsersDTO GetAll(int increment, int offset, bool isActive, string firebaseUserId);
         void Deactivate(int userId);
         void Activate(int userId);
     }

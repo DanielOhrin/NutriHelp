@@ -14,7 +14,8 @@ SELECT
 	up.*,
 	ut.*,
 	COALESCE(dus.ExerciseMinutes, 0) ExerciseMinutes,
-	COALESCE(dus.WaterConsumed, 0) WaterConsumed
+	COALESCE(dus.WaterConsumed, 0) WaterConsumed,
+	COALESCE(dus.[Date], NULL) [Date]
 FROM dbo.UserProfile up
 	LEFT JOIN dbo.UserType ut ON ut.Id = up.UserTypeId
 	LEFT JOIN dbo.DailyUserStats dus ON dus.UserProfileId = up.Id AND dus.[Date] = (SELECT CAST(CAST(GETDATE() AS DATE) AS DATETIME))
@@ -23,5 +24,5 @@ FROM dbo.UserProfile up
 	LEFT JOIN dbo.Ingredient i ON i.Id = mi.IngredientId
 WHERE up.FirebaseId = @FirebaseUserId
 GROUP BY up.Id, up.FirebaseId, up.Email, up.Username, up.FirstName, up.LastName, up.Gender, up.[Weight], up.Height, up.BirthDate, up.ActivityLevel, up.WeightGoal, up.DateCreated, up.CalorieDiff, up.IsActive, up.UserTypeId, 
-			dus.WaterConsumed, dus.ExerciseMinutes,
+			dus.WaterConsumed, dus.ExerciseMinutes, dus.[Date],
 			ut.Id, ut.[Name]
