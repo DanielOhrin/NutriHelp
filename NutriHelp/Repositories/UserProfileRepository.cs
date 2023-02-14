@@ -175,6 +175,7 @@ namespace NutriHelp.Repositories
                                 userProfile.DailyStats.WaterRemaining = DbUtils.GetInt(reader, "WaterRemaining");
                                 userProfile.DailyStats.ExerciseMinutes = DbUtils.GetInt(reader, "ExerciseMinutes");
                                 userProfile.DailyStats.WaterConsumed = DbUtils.GetInt(reader, "WaterConsumed");
+                                userProfile.DailyStats.Date = DbUtils.GetNullableDateTime(reader, "Date");
                             }
                         }
 
@@ -204,146 +205,7 @@ namespace NutriHelp.Repositories
             }
         }
 
-        public List<Meal> GetMeals(string firebaseUserId)
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "dbo.GetDailyMeals";
-
-                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        List<Meal> meals = new();
-
-                        while (reader.Read())
-                        {
-                            int mealId = DbUtils.GetInt(reader, "MealId");
-
-                            if (meals.FirstOrDefault(x => x.Id == mealId) == null)
-                            {
-                                Meal newMeal = new()
-                                {
-                                    Id = mealId,
-                                    MealTypeId = DbUtils.GetInt(reader, "MealTypeId"),
-                                    MealType = new()
-                                    {
-                                        Id = DbUtils.GetInt(reader, "MealTypeId"),
-                                        Name = DbUtils.GetString(reader, "Name"),
-                                    },
-                                    Date = DbUtils.GetDateTime(reader, "MealDate"),
-                                    UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
-                                    Ingredients = new List<MealIngredient>()
-                                };
-                                meals.Add(newMeal);
-                            }
-
-                            Meal currentMeal = meals.First(x => x.Id == mealId);
-
-                            if (!reader.IsDBNull(reader.GetOrdinal("MIID")))
-                            {
-                                MealIngredient newMealIngredient = new()
-                                {
-                                    Id = DbUtils.GetInt(reader, "MIId"),
-                                    MealId = mealId,
-                                    Amount = DbUtils.GetInt(reader, "Amount"),
-                                    IngredientId = DbUtils.GetString(reader, "IngredientId"),
-                                    Ingredient = new()
-                                    {
-                                        Id = DbUtils.GetString(reader, "IngredientId"),
-                                        Name = DbUtils.GetString(reader, "IngredientName"),
-                                        CaloriesPerServing = DbUtils.GetInt(reader, "CaloriesPerServing"),
-                                        Quantity = DbUtils.GetDecimal(reader, "Quantity"),
-                                        Measurement = DbUtils.GetString(reader, "Measurement")
-                                    }
-                                };
-                                currentMeal.Ingredients.Add(newMealIngredient);
-                            }
-                        }
-
-                        return meals;
-                    }
-                }
-            }
-        }
-
-        public void AddFood(string firebaseUserId, AddMealDTO dto)
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "dbo.AddFood";
-
-                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
-                    DbUtils.AddParameter(cmd, "@MealTypeId", dto.MealTypeId);
-                    DbUtils.AddParameter(cmd, "@Amount", dto.MealIngredient.Amount);
-                    DbUtils.AddParameter(cmd, "@IngredientId", dto.MealIngredient.Ingredient.Id);
-                    DbUtils.AddParameter(cmd, "@Name", dto.MealIngredient.Ingredient.Name);
-                    DbUtils.AddParameter(cmd, "@CaloriesPerServing", dto.MealIngredient.Ingredient.CaloriesPerServing);
-                    DbUtils.AddParameter(cmd, "@Quantity", dto.MealIngredient.Ingredient.Quantity);
-                    DbUtils.AddParameter(cmd, "@Measurement", dto.MealIngredient.Ingredient.Measurement);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public void DeleteFood(string foodId, int mealId)
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                        DELETE FROM dbo.MealIngredient
-                        WHERE IngredientId = @IngredientId
-                            AND MealId = @MealId
-                    ";
-
-                    DbUtils.AddParameter(cmd, "@IngredientId", foodId);
-                    DbUtils.AddParameter(cmd, "@MealId", mealId);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public void EditFood(string foodId, int mealId, int newAmount)
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                        UPDATE dbo.MealIngredient
-                        SET Amount = @NewAmount
-                        WHERE IngredientId = @IngredientId
-                            AND MealId = @MealId
-                    ";
-
-                    DbUtils.AddParameter(cmd, "@IngredientId", foodId);
-                    DbUtils.AddParameter(cmd, "@MealId", mealId);
-                    DbUtils.AddParameter(cmd, "@NewAmount", newAmount);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public void EditProfile(UserProfile userProfile)
+        public void Edit(UserProfile userProfile)
         {
             using (SqlConnection conn = Connection)
             {
@@ -379,7 +241,7 @@ namespace NutriHelp.Repositories
             }
         }
 
-        public AllUsersDTO GetAll(int increment, int offset, int isActive, string firebaseUserId)
+        public AllUsersDTO GetAll(int increment, int offset, bool isActive, string firebaseUserId)
         {
             using (SqlConnection conn = Connection)
             {
@@ -395,9 +257,16 @@ namespace NutriHelp.Repositories
                         OFFSET @Offset ROWS FETCH NEXT @Increment ROWS ONLY
                     ";
 
+                    cmd.Parameters.Add(new SqlParameter()
+                    {
+                        ParameterName = "@IsActive",
+                        Value = isActive,
+                        SqlDbType = SqlDbType.Bit,
+                        IsNullable = false
+                    });
+
                     DbUtils.AddParameter(cmd, "@Offset", offset);
                     DbUtils.AddParameter(cmd, "@Increment", increment);
-                    DbUtils.AddParameter(cmd, "@IsActive", isActive);
                     DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -476,11 +345,11 @@ namespace NutriHelp.Repositories
         {
             if (alias != null)
             {
-                return string.Format("{0}.Id, {0}.FirebaseId, {0}.Email, {0}.Username, {0}.FirstName, {0}.LastName, {0}.Gender, {0}.BirthDate, {0}.Weight, {0}.Height, {0}.ActivityLevel, {0}.WeightGoal, {0}.DateCreated, {0}.UserTypeId", alias);
+                return string.Format("{0}.Id, {0}.FirebaseId, {0}.Email, {0}.Username, {0}.FirstName, {0}.LastName, {0}.Gender, {0}.BirthDate, {0}.Weight, {0}.Height, {0}.ActivityLevel, {0}.WeightGoal, {0}.DateCreated, {0}.UserTypeId, {0}.IsActive", alias);
             }
             else
             {
-                return "Id, FirebaseId, Email, Username, FirstName, LastName, Gender, BirthDate, Weight, Height, ActivityLevel, WeightGoal, DateCreated, UserTypeId";
+                return "Id, FirebaseId, Email, Username, FirstName, LastName, Gender, BirthDate, Weight, Height, ActivityLevel, WeightGoal, DateCreated, UserTypeId, IsActive";
             }
         }
 

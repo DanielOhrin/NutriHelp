@@ -34,6 +34,7 @@ namespace NutriHelp
         {
             //! ADD TRANSIENT'S GO HERE
             services.AddTransient<IUserProfileRepository, UserProfileRepository>();
+            services.AddTransient<IMealRepository, MealRepository>();
 
             var firebaseProjectId = Configuration.GetValue<string>("FirebaseProjectId");
             var googleTokenUrl = $"https://securetoken.google.com/{firebaseProjectId}";
