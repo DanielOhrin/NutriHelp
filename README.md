@@ -25,7 +25,7 @@ I decided to make this application because I am passionate about health and fitn
 
 - [dbdiagram (ERD)](https://dbdiagram.io/home)
 - [jest(TDD)](https://jestjs.io/docs/getting-started)  
-- [xUnit (TDD)](https://xunit.net/)
+- [Xunit (TDD)](https://xunit.net/)
   
 ## API
 
