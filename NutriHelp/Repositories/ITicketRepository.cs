@@ -6,8 +6,9 @@ namespace NutriHelp.Repositories
 {
     public interface ITicketRepository
     {
+        List<Ticket> GetAll(string firebaseUserId);
         void Add(Ticket ticket);
-        List<Ticket> GetAll(string? firebaseUserId);
-        void Close(int id);
+        bool Close(int ticketId, string firebaseUserId);
+        bool SendMessage(TicketMessage ticketMessage, string firebaseUserId);
     }
 }
