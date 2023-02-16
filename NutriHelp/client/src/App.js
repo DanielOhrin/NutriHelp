@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router } from "react-router-dom";
 import { Spinner } from 'reactstrap';
 import Header from "./components/Header";
 import ApplicationViews from "./components/ApplicationViews";
 import Footer from "./components/Footer"
 import { onLoginStatusChange, getRole, getCurrentUID } from "./modules/authManager";
+import { getCurrentProfile } from './modules/userProfileManager';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null),
-    [role, setRole] = useState("")
+    [credentials, setCredentials] = useState({})
+
+  const CredentialsContext = createContext({})
 
   useEffect(() => {
     onLoginStatusChange(setIsLoggedIn);
@@ -17,11 +20,19 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
       setTimeout(() => {
-        getRole(getCurrentUID())
-          .then(userType => setRole(userType.name))
+        getCurrentProfile(false)
+          .then(userProfile => {
+            const newCredentials = {
+              Id: userProfile.id,
+              role: userProfile.userType.name,
+              email: userProfile.email
+            }
+
+            setCredentials(newCredentials)
+          })
       }, 200)
     } else {
-      setRole("")
+      setCredentials({})
     }
   }, [isLoggedIn])
 
@@ -31,8 +42,10 @@ function App() {
 
   return (
     <Router>
-      <Header isLoggedIn={isLoggedIn} role={role} />
-      <ApplicationViews isLoggedIn={isLoggedIn} role={role} />
+      <CredentialsContext.Provider value={credentials}>
+        <Header isLoggedIn={isLoggedIn} />
+        <ApplicationViews isLoggedIn={isLoggedIn} />
+      </CredentialsContext.Provider>
       <Footer />
     </Router>
   );

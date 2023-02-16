@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NavLink as RRNavLink } from "react-router-dom";
 import {
   Collapse,
@@ -11,10 +11,11 @@ import {
 } from 'reactstrap';
 import { getEmail, logout } from '../modules/authManager';
 
-export default function Header({ isLoggedIn, role }) {
+export default function Header({ isLoggedIn }) {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const [email, setEmail] = useState("");
+  const credentials = useContext(CredentialsContext);
 
   useEffect(() => {
     if (isLoggedIn) {
