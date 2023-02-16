@@ -312,40 +312,12 @@ namespace NutriHelp.Tests
 
             InMemoryTicketRepository repository = new(dto);
 
-            int ticketNum = sampleSize + 1;
-            Ticket newTicket = new Ticket()
-            {
-                Id = 0,
-                UserProfileId = 2,
-                DateOpened = DateTime.Today,
-                TicketCategoryId = ticketNum,
-                Title = $"Test Title {ticketNum}",
-                DateClosed = null,
-                Messages = new List<TicketMessage>
-                    {
-                        new TicketMessage()
-                        {
-                            Id = ticketNum,
-                            TicketId = ticketNum,
-                            UserProfileId = ticketNum,
-                            DateSent = DateTime.Now,
-                            Message = $"Test Message {ticketNum}"
-                        }
-                    }
-            };
-
-            Ticket existingTicket = dto.Tickets.FirstOrDefault(x => x.Id == 2);
-            if (existingTicket != null)
-            {
-                dto.Tickets.Remove(existingTicket);
-            }
-
-            dto.Tickets.Add(newTicket);
+            Ticket existingTicket = dto.Tickets.First();
 
             //? Mock HttpContext using Moq
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, "firebase2")
+                new Claim(ClaimTypes.NameIdentifier, "firebase1")
             };
             var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
             var user = new ClaimsPrincipal(identity);
@@ -363,7 +335,7 @@ namespace NutriHelp.Tests
             var result = controller.Get();
 
             //! Assert
-            Assert.Contains(newTicket, dto.Tickets);
+            Assert.Contains(existingTicket, dto.Tickets);
             
             var okResult = Assert.IsType<OkObjectResult>(result);
             var value = Assert.IsType<List<Ticket>>(okResult.Value);
@@ -412,6 +384,139 @@ namespace NutriHelp.Tests
             var value = Assert.IsType<List<Ticket>>(okResult.Value);
 
             Assert.StrictEqual(dto.Tickets, value);
+        }
+        
+        
+        [Fact]
+        public void GetSingle_Returns_Ok_With_Ticket_When_Created_By_Requester()
+        {
+            //! Arrange
+            int sampleSize = 20;
+            List<UserProfile> users = CreateTestUserProfiles(sampleSize);
+            List<Ticket> tickets = CreateTestTickets(sampleSize);
+
+            TicketRepositoryDTO dto = new()
+            {
+                Tickets = tickets,
+                UserProfiles = users
+            };
+
+            InMemoryTicketRepository repository = new(dto);
+
+            Ticket existingTicket = dto.Tickets.First();
+
+            //? Mock HttpContext using Moq
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, "firebase1")
+            };
+            var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+            var user = new ClaimsPrincipal(identity);
+
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(c => c.User).Returns(user);
+
+            TicketController controller = new(repository);
+            controller.ControllerContext = new()
+            {
+                HttpContext = httpContext.Object
+            };
+
+            //! Act
+            var result = controller.GetSingle(1);
+
+            //! Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(okResult.Value);
+
+            var returnValue = Assert.IsType<Ticket>(okResult.Value);
+            Assert.StrictEqual(existingTicket, okResult.Value);
+        }
+        
+        [Fact]
+        public void Get_Single_Returns_Ticket_When_Requester_Is_Admin()
+        {
+            //! Arrange
+            int sampleSize = 20;
+            List<UserProfile> users = CreateTestUserProfiles(sampleSize);
+            List<Ticket> tickets = CreateTestTickets(sampleSize);
+
+            TicketRepositoryDTO dto = new()
+            {
+                Tickets = tickets,
+                UserProfiles = users
+            };
+
+            InMemoryTicketRepository repository = new(dto);
+
+            Ticket existingTicket = dto.Tickets.First();
+
+            //? Mock HttpContext using Moq
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, "firebase3")
+            };
+            var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+            var user = new ClaimsPrincipal(identity);
+
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(c => c.User).Returns(user);
+
+            TicketController controller = new(repository);
+            controller.ControllerContext = new()
+            {
+                HttpContext = httpContext.Object
+            };
+
+            //! Act
+            var result = controller.GetSingle(1);
+
+            //! Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(okResult.Value);
+
+            var returnValue = Assert.IsType<Ticket>(okResult.Value);
+            Assert.StrictEqual(existingTicket, okResult.Value);
+        }
+
+        [Fact]
+        public void GetSingle_Returns_Unauthorized_When_Requester_Is_Not_Admin_Or_Ticket_Creator()
+        {
+            //! Arrange
+            int sampleSize = 20;
+            List<UserProfile> users = CreateTestUserProfiles(sampleSize);
+            List<Ticket> tickets = CreateTestTickets(sampleSize);
+
+            TicketRepositoryDTO dto = new()
+            {
+                Tickets = tickets,
+                UserProfiles = users
+            };
+
+            InMemoryTicketRepository repository = new(dto);
+
+            //? Mock HttpContext using Moq
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, "firebase2")
+            };
+            var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+            var user = new ClaimsPrincipal(identity);
+
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(c => c.User).Returns(user);
+
+            TicketController controller = new(repository);
+            controller.ControllerContext = new()
+            {
+                HttpContext = httpContext.Object
+            };
+
+            //! Act
+            var result = controller.GetSingle(1);
+
+            //! Assert
+            Assert.IsType<UnauthorizedResult>(result);
         }
 
         private List<Ticket> CreateTestTickets(int maxAmount)

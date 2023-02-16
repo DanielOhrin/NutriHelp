@@ -38,6 +38,14 @@ namespace NutriHelp.Controllers
             return CreatedAtAction("GET", new { Id = ticket.Id }, ticket);
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetSingle(int id)
+        {
+            Ticket ticket = _ticketRepository.GetSingle(id, CurrentUID);
+
+            return ticket == null ? Unauthorized() : Ok(ticket);
+        }
+
         [HttpPatch("close/{ticketId}")]
         public IActionResult Close([FromRoute] int ticketId)
         {

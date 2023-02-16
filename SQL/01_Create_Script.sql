@@ -97,6 +97,30 @@ CREATE TABLE [MealIngredient] (
 )
 GO
 
+CREATE TABLE [Ticket] (
+	[Id] int PRIMARY KEY IDENTITY(1, 1),
+	[Title] nvarchar(100) NOT NULL,
+	[DateOpened] datetime NOT NULL DEFAULT(GETDATE()),
+	[DateClosed] datetime NULL,
+	[TicketCategoryId] int NOT NULL,
+	[UserProfileId] int NOT NULL
+)
+GO
+
+CREATE TABLE [TicketCategory] (
+	[Id] int PRIMARY KEY IDENTITY(1, 1),
+	[Name] nvarchar(30) NOT NULL UNIQUE
+)
+GO
+
+CREATE TABLE [TicketMessage] (
+	[Id] int PRIMARY KEY IDENTITY(1, 1),
+	[Message] varchar NOT NULL,
+	[DateSent] datetime NOT NULL DEFAULT(GETDATE()),
+	[TicketId] int NOT NULL,
+	[UserProfileId] int NOT NULL
+)
+
 ALTER TABLE [UserProfile] ADD FOREIGN KEY ([UserTypeId]) REFERENCES [UserType] ([Id])
 GO
 

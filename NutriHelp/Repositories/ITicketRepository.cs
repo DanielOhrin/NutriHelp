@@ -10,5 +10,6 @@ namespace NutriHelp.Repositories
         void Add(Ticket ticket);
         bool Close(int ticketId, string firebaseUserId);
         bool SendMessage(TicketMessage ticketMessage, string firebaseUserId);
+        Ticket GetSingle(int id, string firebaseUserId);
     }
 }

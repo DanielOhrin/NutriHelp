@@ -89,6 +89,20 @@ namespace NutriHelp.Tests.Mocks
             }
 
             return result;
+        }        
+        
+        public Ticket GetSingle(int ticketId, string firebaseUserId)
+        {
+            Ticket ticket = _data.Tickets.First(x => x.Id == ticketId);
+
+            UserProfile user = _data.UserProfiles.First(x => x.FirebaseId == firebaseUserId);
+
+            if (user.Id == ticket.UserProfileId || user.UserTypeId == (int)UserTypeEnum.Admin)
+            {
+                return ticket;
+            }
+
+            return null;
         }
     }
 }

@@ -2,9 +2,9 @@
 {
     public enum TicketCategoryEnum
     {
-        General = 0,
-        Feature_Request = 1,
-        Account = 2,
-        Bug_Report = 3
+        General = 1,
+        Feature_Request = 2,
+        Account = 3,
+        Bug_Report = 4
     }
 }

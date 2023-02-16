@@ -10,7 +10,6 @@ namespace NutriHelp.Models
         [Required]
         public string Message { get; set; }
 
-        [Required]
         public int TicketId { get; set; }
 
         [Required]
