@@ -95,17 +95,17 @@ namespace NutriHelp.Repositories
                                         Messages = new List<TicketMessage>()
                                     }
                                 );
-                                
+
                                 ticket = tickets.First(x => x.Id == ticketId);
                             }
 
                             ticket.Messages.Add(
                                 new TicketMessage()
                                 {
-                                    Id = DbUtils.GetInt(reader, "MessageId"), 
-                                    Message = DbUtils.GetString(reader, "Message"), 
-                                    TicketId = ticket.Id, 
-                                    UserProfileId = DbUtils.GetInt(reader, "MessageUserProfileId"), 
+                                    Id = DbUtils.GetInt(reader, "MessageId"),
+                                    Message = DbUtils.GetString(reader, "Message"),
+                                    TicketId = ticket.Id,
+                                    UserProfileId = DbUtils.GetInt(reader, "MessageUserProfileId"),
                                     DateSent = DbUtils.GetDateTime(reader, "DateSent")
                                 }
                             );
@@ -162,6 +162,33 @@ namespace NutriHelp.Repositories
                             {
                                 break;
                             }
+
+                            if (ticket == null)
+                            {
+                                ticket = new()
+                                {
+                                    Id = DbUtils.GetInt(reader, "Id"),
+                                    Title = DbUtils.GetString(reader, "Title"),
+                                    DateOpened = DbUtils.GetDateTime(reader, "DateOpened"),
+                                    DateClosed = DbUtils.GetNullableDateTime(reader, "DateClosed"),
+                                    UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+                                    UserProfile = new() { Id = DbUtils.GetInt(reader, "UserProfileId"), Username = DbUtils.GetString(reader, "Username") },
+                                    TicketCategoryId = DbUtils.GetInt(reader, "TicketCategoryId"),
+                                    TicketCategory = new() { Id = DbUtils.GetInt(reader, "TicketCategoryId"), Name = DbUtils.GetString(reader, "Name") },
+                                    Messages = new List<TicketMessage>()
+                                };
+                            }
+
+                            ticket.Messages.Add(
+                                new TicketMessage()
+                                {
+                                    Id = DbUtils.GetInt(reader, "MessageId"),
+                                    Message = DbUtils.GetString(reader, "Message"),
+                                    TicketId = ticket.Id,
+                                    UserProfileId = DbUtils.GetInt(reader, "MessageUserProfileId"),
+                                    DateSent = DbUtils.GetDateTime(reader, "DateSent")
+                                }
+                            );
                         }
 
                         return ticket;
