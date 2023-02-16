@@ -38,7 +38,6 @@ export const getRole = (firebaseUserId) => {
 }
 
 export const getToken = () => firebase.auth().currentUser.getIdToken();
-export const getEmail = () => firebase.auth().currentUser.email
 export const getCurrentUID = () => firebase.auth().currentUser.uid
 
 export const login = (email, pw) => {

@@ -1,17 +1,17 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router } from "react-router-dom";
 import { Spinner } from 'reactstrap';
 import Header from "./components/Header";
 import ApplicationViews from "./components/ApplicationViews";
 import Footer from "./components/Footer"
-import { onLoginStatusChange, getRole, getCurrentUID } from "./modules/authManager";
+import { onLoginStatusChange } from "./modules/authManager";
 import { getCurrentProfile } from './modules/userProfileManager';
+import { CredentialsContext } from './context/CredentialsContext';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null),
     [credentials, setCredentials] = useState({})
 
-  const CredentialsContext = createContext({})
 
   useEffect(() => {
     onLoginStatusChange(setIsLoggedIn);

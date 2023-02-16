@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { fetchTicketMessages, fetchTickets } from "../../ApiManager"
+import { CredentialsContext } from "../../context/CredentialsContext"
+import { getTickets } from "../../modules/ticketManager"
 import "./Ticket.css"
 export const Ticket = () => {
     const [ticket, setTicket] = useState({}),
         [ticketMessages, setTicketMessages] = useState([]),
-        [userId, setUserId] = useState(0),
         [daysSinceCreation, setDaysSinceCreation] = useState(0),
         [wantsToClose, setWantsToClose] = useState(false),
         [message, setMessage] = useState("")
 
+
+    const { userId } = useContext(CredentialsContext)
     const { ticketId } = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetchTickets(`/${ticketId}`)
+        getTickets(ticketId)
             .then(res => res.json())
             .then(data => {
                 setTicket(data)
+                setTicketMessages(data.messages)
+
                 setDaysSinceCreation(differenceInDays(data.dateOpened, (Date.now() / 1000)))
             })
-
-        fetchTicketMessages(`?ticketId=${ticketId}&_expand=user`)
-            .then(res => res.json())
-            .then(data => setTicketMessages(data))
 
         setUserId(JSON.parse(localStorage.getItem("mgm_user")).id)
     }, [ticketId, userId])

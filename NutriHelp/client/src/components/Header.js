@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavLink as RRNavLink } from "react-router-dom";
 import {
   Collapse,
@@ -9,19 +9,13 @@ import {
   NavItem,
   NavLink
 } from 'reactstrap';
-import { getEmail, logout } from '../modules/authManager';
+import { CredentialsContext } from '../context/CredentialsContext';
+import { logout } from '../modules/authManager';
 
 export default function Header({ isLoggedIn }) {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
-  const [email, setEmail] = useState("");
-  const credentials = useContext(CredentialsContext);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      setEmail(getEmail())
-    }
-  }, [isLoggedIn])
+  const { credentials } = useContext(CredentialsContext);
 
   return (
     <div id="header-component">
@@ -38,7 +32,7 @@ export default function Header({ isLoggedIn }) {
                 </NavItem>
               </>
             }
-            {role === "User" &&
+            {credentials.role === "User" &&
               <>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/profile">Profile</NavLink>
@@ -51,7 +45,7 @@ export default function Header({ isLoggedIn }) {
                 </NavItem>
               </>
             }
-            {role === "Admin" &&
+            {credentials.role === "Admin" &&
               <>
                 {/* <NavItem>
                   <NavLink tag={RRNavLink} to="/users">Users</NavLink>
@@ -64,7 +58,7 @@ export default function Header({ isLoggedIn }) {
             {isLoggedIn &&
               <>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/login" onClick={logout}>{isOpen ? `Logout ${email}` : "Logout"}</NavLink>
+                  <NavLink tag={RRNavLink} to="/login" onClick={logout}>{isOpen ? `Logout ${credentials.email}` : "Logout"}</NavLink>
                 </NavItem>
               </>
             }
@@ -81,7 +75,7 @@ export default function Header({ isLoggedIn }) {
           </Nav>
         </Collapse>
         {!isOpen && isLoggedIn &&
-          <span className="white">{email}</span>
+          <span className="white">{credentials.email}</span>
         }
       </Navbar>
     </div>
