@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NutriHelp.Models
@@ -18,5 +19,7 @@ namespace NutriHelp.Models
 
         public int UserProfileId { get; set; }
         public UserProfile UserProfile { get; set; }
+
+        public List<TicketMessage> Messages { get; set; }
     }
 }

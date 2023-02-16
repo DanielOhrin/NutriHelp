@@ -18,25 +18,16 @@ namespace NutriHelp.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ITicketRepository _ticketRepository;
-        private readonly IUserProfileRepository _userProfileRepository;
 
-        public TicketController(ITicketRepository ticketRepository, IUserProfileRepository userProfileRepository)
+        public TicketController(ITicketRepository ticketRepository)
         {
             _ticketRepository = ticketRepository;
-            _userProfileRepository = userProfileRepository;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            UserProfile userProfile = _userProfileRepository.GetByFirebaseId(CurrentUID, false);
-
-            if (userProfile.UserTypeId != (int)UserTypeEnum.Admin)
-            {
-                return Ok(_ticketRepository.GetAll(CurrentUID));
-            }
-
-            return Ok(_ticketRepository.GetAll(null));
+            return Ok(_ticketRepository.GetAll(CurrentUID));
         }
 
         [HttpPost]
@@ -44,15 +35,31 @@ namespace NutriHelp.Controllers
         {
             _ticketRepository.Add(ticket);
 
-            return CreatedAtAction("GET", ticket.Id, ticket);
+            return CreatedAtAction("GET", new { Id = ticket.Id }, ticket);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetSingle(int id)
+        {
+            Ticket ticket = _ticketRepository.GetSingle(id, CurrentUID);
+
+            return ticket == null ? Unauthorized() : Ok(ticket);
         }
 
         [HttpPatch("close/{ticketId}")]
         public IActionResult Close([FromRoute] int ticketId)
         {
-            _ticketRepository.Close(ticketId);
+            bool isAuthorized = _ticketRepository.Close(ticketId, CurrentUID);
 
-            return NoContent();
+            return isAuthorized == true ? NoContent() : Unauthorized();
+        }
+
+        [HttpPost("message")]
+        public IActionResult SendMessage([FromBody] TicketMessage ticketMessage)
+        {
+           bool isAuthorized =  _ticketRepository.SendMessage(ticketMessage, CurrentUID);
+
+            return isAuthorized == true ? NoContent() : Unauthorized();
         }
 
         private string CurrentUID => User.FindFirstValue(ClaimTypes.NameIdentifier);
