@@ -16,6 +16,7 @@ namespace NutriHelp.Repositories
     public class TicketRepository : BaseRepository, ITicketRepository
     {
         public TicketRepository(IConfiguration config) : base(config) { }
+        
         public void Add(Ticket ticket)
         {
             using (SqlConnection conn = Connection)

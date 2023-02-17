@@ -116,6 +116,10 @@
     padding-bottom: 5rem;
 }
 
+#close-ticket-btn {
+    float: bottom;
+}
+
 .list {
     display: flex;
     justify-content: space-evenly;

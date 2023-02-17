@@ -62,7 +62,7 @@ const Ticket = () => {
                     {
                         currentMessages.map(cM => {
                             return (
-                                <div key={`message--${cM.id}`} className={`${cM.userId === credentials.id ? "self-end" : "self-start"}`}>
+                                <div key={`message--${cM.id}`} className={`${cM.userProfileId === credentials.id ? "self-end" : "self-start"}`}>
                                     <span><em>{cM.userProfile?.username} | {new Date(cM.dateSent).toLocaleTimeString()}</em></span>
                                     {cM.message}
                                 </div>
@@ -132,7 +132,7 @@ const Ticket = () => {
                                             <input id="message-input" type="text" value={message} onChange={(evt) => setMessage(evt.target.value)}></input>
                                             <button id="message-btn" onClick={() => sendMessage()}>Send Message</button>
                                         </div>
-                                        <Button className="mr-4" onClick={() => setModal(!modal)}>Close Ticket</Button>
+                                        <Button id="close-ticket-btn" onClick={() => setModal(!modal)}>Close Ticket</Button>
                                         <Modal toggle={() => setModal(!modal)} isOpen={modal}>
                                             <ModalHeader toggle={() => setModal(!modal)}>Confirmation</ModalHeader>
                                             <ModalBody>Are you sure you want to close this ticket?</ModalBody>

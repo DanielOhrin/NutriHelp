@@ -36,4 +36,3 @@ IF @UserTypeId = 1 OR @TicketUserProfileId = (SELECT Id FROM dbo.UserProfile WHE
 	END
 
 SELECT CAST(0 AS BIT) IsAuthorized
-RETURN

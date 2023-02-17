@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { fetchTicketCategories, fetchTickets } from "../../ApiManager"
+import { getTickets } from "../../modules/ticketManager"
 
 const AdminTicketList = () => {
     const [userId] = useState(JSON.parse(localStorage.getItem("mgm_user")).id),
@@ -10,17 +10,10 @@ const AdminTicketList = () => {
             status: "", // Open/Closed/All -- Filter
             categoryId: 0, // 0 is all -- Filter
             msg: "" // asc or desc
-        }),
-        [categories, setCategories] = useState([])
+        })
 
     useEffect(() => {
-        fetchTickets(`?_expand=ticketCategory&_embed=ticketMessages`)
-            .then(res => res.json())
-            .then(data => setTickets(data))
-
-        fetchTicketCategories()
-            .then(res => res.json())
-            .then(data => setCategories(data))
+        getTickets().then(setTickets)
     }, [userId])
 
     useEffect(() => {
@@ -28,8 +21,8 @@ const AdminTicketList = () => {
 
         if (sort.status === "open" || sort.status === "closed") {
             sort.status === "open"
-                ? newTickets = newTickets.filter(ticket => ticket.dateClosed === "")
-                : newTickets = newTickets.filter(ticket => ticket.dateClosed !== "")
+                ? newTickets = newTickets.filter(ticket => ticket.dateClosed === null)
+                : newTickets = newTickets.filter(ticket => ticket.dateClosed !== null)
         }
 
         if (sort.categoryId) {
@@ -38,8 +31,8 @@ const AdminTicketList = () => {
 
         if (sort.msg === "asc" || sort.msg === "desc") {
             newTickets = [...newTickets].sort((a, b) => sort.msg === "asc"
-                ? a.ticketMessages.at(-1).datetime - b.ticketMessages.at(-1).datetime
-                : b.ticketMessages.at(-1).datetime - a.ticketMessages.at(-1).datetime
+                ? Date.parse(a.messages.at(-1).dateSent) - Date.parse(b.messages.at(-1).dateSent)
+                : Date.parse(b.messages.at(-1).dateSent) - Date.parse(a.messages.at(-1).dateSent)
             )
         }
 
@@ -53,7 +46,7 @@ const AdminTicketList = () => {
                 <div className="flex">
                     <div className="flex flex-col">
                         <label htmlFor="status">Status (Open/Closed)</label>
-                        <select name="status" onChange={(evt) => {
+                        <select className="form-control" name="status" onChange={(evt) => {
                             const copy = { ...sort }
 
                             switch (evt.target.value) {
@@ -77,25 +70,24 @@ const AdminTicketList = () => {
                             <option value="2">Closed</option>
                         </select>
                     </div>
-                    <div className="flex flex-col mx-12">
+                    <div className="flex flex-col mx-4">
                         <label htmlFor="categoryId">Category</label>
-                        <select name="categoryId" onChange={(evt) => {
+                        <select className="form-control" name="categoryId" onChange={(evt) => {
                             const copy = { ...sort }
                             copy.categoryId = parseInt(evt.target.value)
 
                             setSort(copy)
                         }}>
                             <option value="0">Any</option>
-                            {
-                                categories.map(cat => {
-                                    return <option key={`category--${cat.id}`} value={cat.id}>{cat.label}</option>
-                                })
-                            }
+                            <option value="1">General</option>
+                            <option value="2">Feature Request</option>
+                            <option value="3">Account</option>
+                            <option value="4">Bug Report</option>
                         </select>
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex-col">
                         <label htmlFor="msg">Last Message</label>
-                        <select name="msg" onChange={(evt) => {
+                        <select className="form-control" name="msg" onChange={(evt) => {
                             const copy = { ...sort }
 
                             switch (evt.target.value) {
@@ -121,10 +113,10 @@ const AdminTicketList = () => {
                     </div>
                 </div>
             </section>
-            <section id="tickets" className="flex flex-col items-center w-3/5">
+            <section id="tickets">
                 <h2>Tickets</h2>
                 <div className="w-full">
-                    <header className="flex justify-evenly list w-auto list-headers">
+                    <header className="list list-headers">
                         <div>Title</div>
                         <div>Category</div>
                         <div>Last Message</div>
@@ -139,9 +131,9 @@ const AdminTicketList = () => {
                                         <div>
                                             <Link to={`/ticket/${ticket.id}`}>{ticket.title}</Link>
                                         </div>
-                                        <div>{ticket.ticketCategory?.label}</div>
-                                        <div>{new Date(ticket.ticketMessages.at(-1).datetime * 1000).toLocaleDateString()}</div>
-                                        <div>{new Date(ticket.dateOpened * 1000).toLocaleDateString()}</div>
+                                        <div>{ticket.ticketCategory?.name}</div>
+                                        <div>{new Date(ticket.messages.at(-1).dateSent).toLocaleDateString()}</div>
+                                        <div>{new Date(ticket.dateOpened).toLocaleDateString()}</div>
                                     </div>
                                 )
                                 : <></>

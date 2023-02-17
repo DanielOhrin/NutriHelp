@@ -31,9 +31,9 @@ const TicketForm = ({ setShowForm, resetState }) => {
         if (ticketInfo.title.replaceAll(" ", "") !== "" && !Object.values(ticketInfo).includes(0) && firstMsg.replaceAll(" ", "") !== "") {
             createTicket({
                 ...ticketInfo,
-                userProfileId: credentials.userProfileId,
+                userProfileId: credentials.id,
                 messages: [{
-                    userProfileId: credentials.userProfileId,
+                    userProfileId: credentials.id,
                     message: firstMsg
                 }]
             })

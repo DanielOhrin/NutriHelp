@@ -25,7 +25,7 @@ export default function Header({ isLoggedIn }) {
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar justified>
             { /* When isLoggedIn === true, we will render the Home link */}
-            {isLoggedIn &&
+            {isLoggedIn && credentials.role !== "Admin" &&
               <>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/">Home</NavLink>
@@ -47,12 +47,12 @@ export default function Header({ isLoggedIn }) {
             }
             {credentials.role === "Admin" &&
               <>
-                {/* <NavItem>
-                  <NavLink tag={RRNavLink} to="/users">Users</NavLink>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/">Users</NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/tickets">Tickets</NavLink>
-                </NavItem> */}
+                </NavItem>
               </>
             }
             {isLoggedIn &&

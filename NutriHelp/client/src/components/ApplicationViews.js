@@ -8,6 +8,7 @@ import Daily from "./user/daily/Daily";
 import Home from "./user/Home";
 import Profile from "./user/Profile";
 import Support from "./user/Support";
+import AdminTicketList from "./tickets/AdminTicketList";
 import { CredentialsContext } from "../context/CredentialsContext";
 
 export default function ApplicationViews({ isLoggedIn }) {
@@ -24,8 +25,11 @@ export default function ApplicationViews({ isLoggedIn }) {
 
           <Route path="profile" element={isLoggedIn && credentials.role === "User" ? <Profile /> : <></>} />
           <Route path="daily" element={isLoggedIn && credentials.role === "User" ? <Daily /> : <></>} />
+
           <Route path="support" element={isLoggedIn && credentials.role === "User" ? <Support /> : <></>} />
           <Route path="ticket/:ticketId" element={isLoggedIn ? <Ticket credentials={credentials} /> : <></>} />
+
+          <Route path="tickets" element={isLoggedIn && credentials.role === "Admin" ? <AdminTicketList /> : <></>} />
 
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
