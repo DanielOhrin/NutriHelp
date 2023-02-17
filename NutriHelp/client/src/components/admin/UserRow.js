@@ -12,8 +12,9 @@ const UserRow = ({ profile, resetState, isActive }) => {
     return (
         <tr>
             <td className="col-2">{profile.id}</td>
-            <td>{profile.firstName} {profile.lastName}</td>
             <td>{profile.email}</td>
+            <td>{profile.firstName} {profile.lastName}</td>
+            <td>{profile.username}</td>
             <td>
                 {
                     isActive
