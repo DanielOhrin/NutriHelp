@@ -6,10 +6,10 @@ import TicketForm from "../tickets/TicketForm"
 import TicketList from "../tickets/TicketList"
 import "../tickets/Ticket.css"
 import { useState } from "react"
+import { Button } from "reactstrap"
 
 const Support = () => {
     const [showForm, setShowForm] = useState(false)
-
 
     return (
         <article id="support-container">
@@ -18,7 +18,8 @@ const Support = () => {
             <section id="faqs-container">{FAQs.map((faq, i) => <div key={`faq--${i}`}><FAQ Q={faq.Q} A={faq.A} /></div>)}</section>
             <section id="tickets">
                 <h2>Tickets</h2>
-                <div className="w-full">
+                {!showForm && <Button onClick={() => setShowForm(true)} color="primary" className="mb-1">Create New</Button>}
+                <div className={!showForm ? "w-full" : "w-75"}>
                     {
                         !showForm
                             ? (

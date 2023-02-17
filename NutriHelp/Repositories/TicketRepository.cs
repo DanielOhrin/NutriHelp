@@ -32,7 +32,7 @@ namespace NutriHelp.Repositories
                     DbUtils.AddParameter(cmd, "@UserProfileId", ticket.UserProfileId);
 
                     DbUtils.AddParameter(cmd, "@Message", ticket.Messages[0].Message);
-                    DbUtils.AddParameter(cmd, "@MessageUserProfileId", ticket.Messages[0].Message);
+                    DbUtils.AddParameter(cmd, "@MessageUserProfileId", ticket.Messages[0].UserProfileId);
 
                     cmd.ExecuteNonQuery();
                 }
