@@ -9,14 +9,15 @@
 #ticket-section {
     display: flex;
     flex-flow: column nowrap;
-    align-items: center; 
+    align-items: center;
     margin-top: 1rem;
     margin-bottom: 1rem;
     width: 50%;
     border: 0.2rem solid rgba(0, 0, 0, 0.637);
 }
 
-#ticket-section > header, #ticket-section > footer {
+#ticket-section > header,
+#ticket-section > footer {
     width: 95%;
 }
 
@@ -28,7 +29,8 @@
     margin-bottom: 0.25rem;
 }
 
-#ticket-section > header > div.self-start, #ticket-section > header > div.self-end {
+#ticket-section > header > div.self-start,
+#ticket-section > header > div.self-end {
     display: flex;
     flex-flow: column nowrap;
     padding: 0.25rem;
@@ -56,7 +58,6 @@
     border-bottom-left-radius: 360rem;
     border-right: none;
     padding-left: 2.15rem;
-    
 }
 
 #send-message-div {
@@ -84,16 +85,29 @@
 #message-btn:active {
     background-color: rgb(124, 224, 255);
 }
-/*!------------------------------DIVIDER-----------------------------*/
+/*!------------------------------Ticket List-----------------------------*/
+.ticket-row {
+    display: flex;
+    justify-content: space-evenly;
+    width: auto !important;
+}
+
+#tickets {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 #tickets > div {
     width: 90%;
 }
 
-#tickets > div:nth-child(even) {
+#tickets > div > div:nth-child(even) {
     background-color: lightgray;
 }
 
-#tickets > div:nth-child(odd) {
+#tickets > div > div:nth-child(odd) {
     background-color: rgb(182, 182, 182);
 }
 
@@ -102,20 +116,38 @@
     padding-bottom: 5rem;
 }
 
-.contact-btn {
-    padding: 2.5rem;
-    border-radius: 360rem;
-    width: 50%;
-    font-size: 2rem;
-    box-shadow: 1px 1px inset;
-    background-color: rgb(199, 199, 199);
-    text-shadow: 1px 1px;
+.list {
+    display: flex;
+    justify-content: space-evenly;
+    width: 83.333333333%;
+    margin: 0rem;
+    padding: 1rem 0 1rem 0;
+    border: 1px solid black;
 }
 
-.contact-btn:hover {
-    background-color: rgb(228, 228, 228);
+.list > div {
+    width: 20%;
+    text-align: center;
 }
 
-.contact-btn:active {
-    background-color: rgb(241, 241, 241);
-} 
+.list-headers {
+    display: flex;
+    justify-content: space-evenly;
+    width: auto;
+    background-color: rgb(132, 194, 255);
+    text-decoration: underline;
+    font-weight: bold;
+    border: solid 2px black !important;
+    border-bottom: 1px solid black !important;
+}
+
+@media screen and (max-width: 750px) {
+    #tickets {
+        padding: 4px;
+        width: 100%;
+    }
+
+    #tickets > div {
+        width: 100%;
+    }
+}

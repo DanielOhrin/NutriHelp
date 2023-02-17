@@ -20,6 +20,10 @@ body {
     height: inherit;
 }
 
+#root > main {
+    width: 100%;
+}
+
 @media screen and (min-width: 700px) {
     #root {
         background-color: rgba(182, 182, 182, 0.616);

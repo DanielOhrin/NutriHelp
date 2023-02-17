@@ -16,7 +16,7 @@ const TicketList = () => {
 
                     return !ticket.dateClosed
                         ? (
-                            <div key={`ticket--${ticket.id}`} className="flex justify-evenly list w-auto">
+                            <div key={`ticket--${ticket.id}`} className="ticket-row list">
                                 <div>
                                     <Link to={`/ticket/${ticket.id}`}>{ticket.title}</Link>
                                 </div>
