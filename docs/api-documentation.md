@@ -122,4 +122,42 @@ _Admin protected._
 `query:` mealId(int)
 `query:` newAmount(int)  
   
+`Response:` 204  
+
+<hr />  
+
+## **Base: `/api/ticket`**
+
+## /
+
+### `GET`  
+  
+`Response:` 200  
+`Response Body:` List<Ticket>
+  
+### `POST`
+
+`Request Body:` Ticket object  
+  
+`Response:` 201
+
+## /:ticketId
+
+### `GET`
+
+`Response:` 200  
+`Response Body:` Ticket object
+
+## /close/:ticketId
+
+### `PATCH`
+
+`Response:` 204
+
+## /message
+
+### `POST`
+
+`Request Body:` TicketMessage object
+
 `Response:` 204
