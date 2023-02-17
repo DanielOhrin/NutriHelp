@@ -78,6 +78,8 @@ Once they click the Detailed View button, or click `Daily` in the navbar, they a
   
 A user can also edit their profile at `Profile`, and see FAQs at `Support`.  
   
+_There is a ticket system that is not shown unless you run the app_  
+
 ### Admins
 
 Admins only have one page currently -- their [Home page](https://prnt.sc/ClU9D5BCNwGY). Here, they can activate/deactivate users, and filter by their IsActive status.  
