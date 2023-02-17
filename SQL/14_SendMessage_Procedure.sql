@@ -4,7 +4,7 @@ GO
 DROP PROCEDURE IF EXISTS dbo.SendMessage
 GO
 
-CREATE PROCEDURE dbo.SendMessage @Message VARCHAR, @MessageUserProfileId INT, @TicketId INT, @FirebaseUserId NVARCHAR(28)
+CREATE PROCEDURE dbo.SendMessage @Message nvarchar(max), @MessageUserProfileId INT, @TicketId INT, @FirebaseUserId NVARCHAR(28)
 AS
 
 DECLARE @UserProfile TABLE (
@@ -28,9 +28,9 @@ IF (@TicketUserProfileId = (SELECT Id FROM @UserProfile) AND @MessageUserProfile
 		INSERT INTO dbo.TicketMessage ([Message], DateSent, TicketId, UserProfileId)
 		VALUES (@Message, GETDATE(), @TicketId, (SELECT Id FROM @UserProfile))
 
-		SELECT 1
+		SELECT CAST(1 AS BIT)
 		RETURN
 	END;
 
-SELECT 0
+SELECT CAST(0 AS BIT)
 RETURN

@@ -72,13 +72,13 @@ namespace NutriHelp.Utils
             return reader.GetDateTime(reader.GetOrdinal(column));
         }
 
-        public static DateTime GetNullableDateTime(SqlDataReader reader, string column)
+        public static DateTime? GetNullableDateTime(SqlDataReader reader, string column)
         {
             int ordinal = reader.GetOrdinal(column);
 
             if (reader.IsDBNull(ordinal))
             {
-                return DateTime.Today;
+                return null;
             }
 
             return reader.GetDateTime(ordinal);

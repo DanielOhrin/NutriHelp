@@ -175,7 +175,7 @@ namespace NutriHelp.Repositories
                                 userProfile.DailyStats.WaterRemaining = DbUtils.GetInt(reader, "WaterRemaining");
                                 userProfile.DailyStats.ExerciseMinutes = DbUtils.GetInt(reader, "ExerciseMinutes");
                                 userProfile.DailyStats.WaterConsumed = DbUtils.GetInt(reader, "WaterConsumed");
-                                userProfile.DailyStats.Date = DbUtils.GetNullableDateTime(reader, "Date");
+                                userProfile.DailyStats.Date = DbUtils.GetNullableDateTime(reader, "Date") ?? DateTime.Now;
                             }
                         }
 
@@ -250,7 +250,7 @@ namespace NutriHelp.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, FirstName, LastName, Email, (SELECT COUNT(Id) FROM dbo.UserProfile WHERE IsActive = @IsActive AND FirebaseId != @FirebaseUserId) Total
+                        SELECT Id, FirstName, LastName, Email, Username, (SELECT COUNT(Id) FROM dbo.UserProfile WHERE IsActive = @IsActive AND FirebaseId != @FirebaseUserId) Total
                         FROM dbo.UserProfile
                         WHERE IsActive = @IsActive AND FirebaseId != @FirebaseUserId
                         ORDER BY LastName
@@ -281,7 +281,8 @@ namespace NutriHelp.Repositories
                                 Id = DbUtils.GetInt(reader, "Id"),
                                 FirstName = DbUtils.GetString(reader, "FirstName"),
                                 LastName = DbUtils.GetString(reader, "LastName"),
-                                Email = DbUtils.GetString(reader, "Email")
+                                Email = DbUtils.GetString(reader, "Email"),
+                                Username = DbUtils.GetString(reader, "Username")
                             };
 
                             userProfiles.Add(newUserProfile);

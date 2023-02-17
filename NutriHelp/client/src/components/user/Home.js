@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button } from "reactstrap"
 import randomQuote from "../../assets/js/quotes"
 import logo from "../../assets/images/company_logo.png"
-import "./home.css"
+import "./Home.css"
 import { getCurrentProfile } from "../../modules/userProfileManager"
 import { useNavigate } from "react-router-dom"
 

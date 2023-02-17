@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 import logo from "../../assets/images/company_logo.png"
 import { getCurrentProfile, editUser } from "../../modules/userProfileManager"
-import "./profile.css"
+import "./Profile.css"
 
 const Profile = () => {
     const [profile, setProfile] = useState({}),

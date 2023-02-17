@@ -115,7 +115,7 @@ GO
 
 CREATE TABLE [TicketMessage] (
 	[Id] int PRIMARY KEY IDENTITY(1, 1),
-	[Message] varchar NOT NULL,
+	[Message] nvarchar(max) NOT NULL,
 	[DateSent] datetime NOT NULL DEFAULT(GETDATE()),
 	[TicketId] int NOT NULL,
 	[UserProfileId] int NOT NULL

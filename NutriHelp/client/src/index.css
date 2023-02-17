@@ -20,6 +20,10 @@ body {
     height: inherit;
 }
 
+#root > main {
+    width: 100%;
+}
+
 @media screen and (min-width: 700px) {
     #root {
         background-color: rgba(182, 182, 182, 0.616);
@@ -68,10 +72,6 @@ code {
     margin-right: 4px;
 }
 
-.w-full {
-    width: 50%;
-}
-
 .nav-item {
     margin: 0 1rem;
 }
@@ -109,4 +109,16 @@ code {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.self-start {
+    align-self: flex-start;
+}
+
+.self-end {
+    align-self: flex-end;
 }

@@ -28,9 +28,9 @@ IF @TicketUserProfileId = (SELECT Id FROM @UserProfile) OR (SELECT UserTypeId FR
 		SET DateClosed = GETDATE()
 		WHERE Id = @TicketId
 
-		SELECT 1
+		SELECT CAST(1 AS BIT)
 		RETURN
 	END;
 
-SELECT 0
+SELECT CAST(0 AS BIT)
 RETURN

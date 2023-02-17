@@ -1,10 +1,10 @@
 use [NutriHelp]
 GO
 
-DROP PROCEDURE IF EXISTS dbo.GetTicket
+DROP PROCEDURE IF EXISTS dbo.GetSingleTicket
 GO
 
-CREATE PROCEDURE dbo.GetTicket @TicketId INT, @FirebaseUserId NVARCHAR(28)
+CREATE PROCEDURE dbo.GetSingleTicket @TicketId INT, @FirebaseUserId NVARCHAR(28)
 AS
 
 DECLARE @UserTypeId INT = (
@@ -25,7 +25,7 @@ IF @UserTypeId = 1 OR @TicketUserProfileId = (SELECT Id FROM dbo.UserProfile WHE
 				tm.Id MessageId, tm.DateSent, tm.[Message], tm.TicketId, tm.UserProfileId MessageUserProfileId,
 				tc.[Name],
 				up.Username,
-				1 IsAuthorized
+				CAST(1 AS BIT) IsAuthorized
 		FROM dbo.Ticket t
 		LEFT JOIN dbo.TicketMessage tm ON tm.TicketId = t.Id
 		LEFT JOIN dbo.TicketCategory tc ON tc.Id = t.TicketCategoryId
@@ -35,5 +35,4 @@ IF @UserTypeId = 1 OR @TicketUserProfileId = (SELECT Id FROM dbo.UserProfile WHE
 		RETURN
 	END
 
-SELECT 0 IsAuthorized
-RETURN
+SELECT CAST(0 AS BIT) IsAuthorized
