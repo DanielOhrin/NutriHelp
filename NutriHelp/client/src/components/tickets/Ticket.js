@@ -1,54 +1,37 @@
 import React, { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 import { CredentialsContext } from "../../context/CredentialsContext"
-import { getTickets } from "../../modules/ticketManager"
+import { getTicket, closeTicket as apiCloseTicket, sendMessage as apiSendMessage } from "../../modules/ticketManager"
 import "./Ticket.css"
-export const Ticket = () => {
+
+const Ticket = () => {
     const [ticket, setTicket] = useState({}),
-        [ticketMessages, setTicketMessages] = useState([]),
         [daysSinceCreation, setDaysSinceCreation] = useState(0),
-        [wantsToClose, setWantsToClose] = useState(false),
+        [modal, setModal] = useState(false),
         [message, setMessage] = useState("")
 
-
-    const { userId } = useContext(CredentialsContext)
-    const { ticketId } = useParams()
     const navigate = useNavigate()
+    const { credentials } = useContext(CredentialsContext)
+    const { ticketId } = useParams()
 
     useEffect(() => {
-        getTickets(ticketId)
-            .then(res => res.json())
-            .then(data => {
-                setTicket(data)
-                setTicketMessages(data.messages)
+        getTicket(ticketId)
+            .then(newTicket => {
+                newTicket.dateOpened = new Date(newTicket.dateOpened)
+                setTicket(newTicket)
 
-                setDaysSinceCreation(differenceInDays(data.dateOpened, (Date.now() / 1000)))
+                setDaysSinceCreation(differenceInDays(Date.parse(newTicket.dateOpened), Date.now()))
             })
-
-        setUserId(JSON.parse(localStorage.getItem("mgm_user")).id)
-    }, [ticketId, userId])
-
-    useEffect(() => {
-        throw new Error('Not Implemented Yet')
-        if (ticket.userId) {
-            // I do realize they can still see the ticket data through the network tab
-            if (userId !== ticket.userId && !JSON.parse(localStorage.getItem("mgm_user")).isStaff) {
-                navigate("/support", { replace: true })
-                return;
-            }
-        }
-    }, [ticket, userId, navigate])
+    }, [ticketId])
 
     const differenceInDays = (dateOne, dateTwo) => {
 
-        dateOne = new Date(dateOne * 1000).toDateString().split(" ")
-        dateTwo = new Date(dateTwo * 1000).toDateString().split(" ")
+        dateOne = new Date(dateOne).toDateString().split(" ")
+        dateTwo = new Date(dateTwo).toDateString().split(" ")
 
-        dateOne[1] = `${dateOne[1]},`
-        dateTwo[1] = `${dateTwo[1]},`
-
-        dateOne = new Date(`${dateOne.join(" ")} 00:00:00`)
-        dateTwo = new Date(`${dateTwo.join(" ")} 00:00:00`)
+        dateOne = new Date(`${dateOne.join(" ")}, 00:00:00`)
+        dateTwo = new Date(`${dateTwo.join(" ")}, 00:00:00`)
 
         return Math.ceil((Date.parse(dateTwo) / 1000 - Date.parse(dateOne) / 1000) / 86400)
     }
@@ -56,26 +39,31 @@ export const Ticket = () => {
     const renderMessages = () => {
         const messages = []
 
-
         for (let i = 0; i <= daysSinceCreation; i++) {
-            let bottomLimit = new Date((ticket.dateOpened + (86400 * (i))) * 1000).toDateString().split(" ")
-            let topLimit = new Date((ticket.dateOpened + (86400 * (i))) * 1000).toDateString().split(" ")
+            //! This is the current day's start and end
+            let bottomLimit = new Date(ticket.dateOpened + (86400000 * (i))).toDateString().split(" ")
+            let topLimit = new Date(ticket.dateOpened + (86400000 * (i))).toDateString().split(" ")
 
-            bottomLimit = Date.parse(new Date(`${bottomLimit.join(" ")}, 00:00:00`)) / 1000
-            topLimit = Date.parse(new Date(`${topLimit.join(" ")}, 23:59:59`)) / 1000
+            //! This is setting the day (mon/tue/wed) to have a comma after it
+            bottomLimit[0] = `${bottomLimit[0]}, `
+            topLimit[0] = `${topLimit[0]}, `
 
-            const currentMessages = ticketMessages.filter(tM => tM.datetime >= bottomLimit && tM.datetime <= topLimit)
+            //! Turns it into milliseconds passed since January 1, 1970
+            bottomLimit = Date.parse(new Date(`${bottomLimit.join(" ")} 00:00:00`))
+            topLimit = Date.parse(new Date(`${topLimit.join(" ")} 23:59:59`))
 
+            //! Grabs the messages sent on current day in loop
+            const currentMessages = ticket.messages.filter(tM => Date.parse(tM.dateSent) >= bottomLimit && Date.parse(tM.dateSent) <= topLimit)
             if (!currentMessages.length) continue
 
             messages.push(
-                <React.Fragment key={`message--${message.id}`}>
-                    <h3><em>{new Date((bottomLimit * 1000)).toLocaleDateString()}</em></h3>
+                <React.Fragment key={`messages--${i}`}>
+                    <h3><em>{new Date((bottomLimit)).toLocaleDateString()}</em></h3>
                     {
                         currentMessages.map(cM => {
                             return (
-                                <div key={`message--${cM.id}`} className={`${cM.userId === userId ? "self-end" : "self-start"}`}>
-                                    <span><em>{cM.user?.username} | {new Date(cM.datetime * 1000).toLocaleTimeString()}</em></span>
+                                <div key={`message--${cM.id}`} className={`${cM.userId === credentials.id ? "self-end" : "self-start"}`}>
+                                    <span><em>{cM.userProfile?.username} | {new Date(cM.dateSent).toLocaleTimeString()}</em></span>
                                     {cM.message}
                                 </div>
                             )
@@ -89,13 +77,7 @@ export const Ticket = () => {
     }
 
     const closeTicket = () => {
-        fetchTickets(`/${ticket.id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(ticket)
-        })
+        apiCloseTicket(ticketId)
             .then(res => {
                 if (res.ok) {
                     navigate("/support", { replace: true })
@@ -110,23 +92,14 @@ export const Ticket = () => {
         sendBtn.disabled = true
 
         if (message.replaceAll(" ", "") !== "") {
-            fetchTicketMessages(`/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    ticketId: ticket.id,
-                    userId: userId,
-                    datetime: Math.round(Date.now() / 1000),
-                    message: document.getElementById("message-input").value
-                })
+            apiSendMessage({
+                userProfileId: credentials.id,
+                ticketId: ticket.id,
+                message: document.getElementById("message-input").value
             })
                 .then(res => {
                     if (res.ok) {
-                        fetchTicketMessages(`?ticketId=${ticketId}&_expand=user`)
-                            .then(res => res.json())
-                            .then(data => setTicketMessages(data))
+                        getTicket(ticket.id).then(data => setTicket(data))
                         setMessage("")
                         sendBtn.disabled = false
                     } else {
@@ -141,44 +114,41 @@ export const Ticket = () => {
     }
 
     return (
-        <article id="ticket-article" className="w-full bg-gray-200">
-            <section id="ticket-section" className="">
-                <h2 className="w-full text-center">{ticket.title}</h2>
-                <header className="flex flex-col items-center">
-                    {
-                        renderMessages()
-                    }
-                </header>
-                <footer>
-                    {
-                        !ticket.dateClosed ? (
-                            <div className="flex flex-row justify-between">
-                                <input id="message-input" className="w-5/6" type="text" value={message} onChange={(evt) => setMessage(evt.target.value)}></input>
-                                <button id="message-btn" onClick={() => sendMessage()}>Send Message</button>
-                            </div>
-                        )
-                            : <></>
-                    }
-                    {
-                        !JSON.parse(localStorage.getItem("mgm_user")).isStaff
-                            ? <button className="mr-4" onClick={() => setWantsToClose(true)}>Close Ticket</button>
-                            : <></>
-                    }
-                    {
-                        wantsToClose
-                            ? (
-                                <>
-                                    <span>Are You Sure?</span>
-                                    <button className="mx-2" onClick={() => setWantsToClose(false)}>No</button>
-                                    <button onClick={() => closeTicket()}>Yes</button>
-                                </>
-                            )
-                            : ""
-                    }
-
-                </footer>
-            </section>
-        </article>
+        credentials.role && ticket.userProfileId ?
+            (ticket.dateClosed === null && ticket.userProfileId === credentials.id) || credentials.role === "Admin" ?
+                <article id="ticket-article">
+                    <section id="ticket-section" className="">
+                        <h2 className="w-full text-center">{ticket.title}</h2>
+                        <header className="flex-col items-center">
+                            {
+                                ticket.messages ? renderMessages() : <></>
+                            }
+                        </header>
+                        <footer>
+                            {
+                                !ticket.dateClosed ? (
+                                    <>
+                                        <div id="send-message-div">
+                                            <input id="message-input" type="text" value={message} onChange={(evt) => setMessage(evt.target.value)}></input>
+                                            <button id="message-btn" onClick={() => sendMessage()}>Send Message</button>
+                                        </div>
+                                        <Button className="mr-4" onClick={() => setModal(!modal)}>Close Ticket</Button>
+                                        <Modal toggle={() => setModal(!modal)} isOpen={modal}>
+                                            <ModalHeader toggle={() => setModal(!modal)}>Confirmation</ModalHeader>
+                                            <ModalBody>Are you sure you want to close this ticket?</ModalBody>
+                                            <ModalFooter>
+                                                <Button onClick={() => setModal(!modal)}>Cancel</Button>
+                                                <Button color="primary" onClick={closeTicket}>Confirm</Button>
+                                            </ModalFooter>
+                                        </Modal>
+                                    </>
+                                ) : <></>
+                            }
+                        </footer>
+                    </section>
+                </article> : navigate('/', { replace: true })
+            : <></>
     )
 }
 
+export default Ticket

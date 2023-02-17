@@ -175,7 +175,7 @@ namespace NutriHelp.Repositories
                                 userProfile.DailyStats.WaterRemaining = DbUtils.GetInt(reader, "WaterRemaining");
                                 userProfile.DailyStats.ExerciseMinutes = DbUtils.GetInt(reader, "ExerciseMinutes");
                                 userProfile.DailyStats.WaterConsumed = DbUtils.GetInt(reader, "WaterConsumed");
-                                userProfile.DailyStats.Date = DbUtils.GetNullableDateTime(reader, "Date");
+                                userProfile.DailyStats.Date = DbUtils.GetNullableDateTime(reader, "Date") ?? DateTime.Now;
                             }
                         }
 

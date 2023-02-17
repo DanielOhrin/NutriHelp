@@ -1,16 +1,13 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { getTickets } from "../../modules/ticketManager"
 
-export const TicketList = () => {
-    const [userId] = useState(JSON.parse(localStorage.getItem("mgm_user")).id),
-        [tickets, setTickets] = useState([])
+const TicketList = () => {
+    const [tickets, setTickets] = useState([])
 
     useEffect(() => {
-        getTickets(`?userId=${userId}&_expand=ticketCategory&_embed=ticketMessages`)
-            .then(res => res.json())
-            .then(data => setTickets(data))
-    }, [userId])
+        getTickets().then(setTickets)
+    }, [])
 
     return (
         <>
@@ -23,14 +20,16 @@ export const TicketList = () => {
                                 <div>
                                     <Link to={`/ticket/${ticket.id}`}>{ticket.title}</Link>
                                 </div>
-                                <div>{ticket.ticketCategory?.label}</div>
-                                <div>{new Date(ticket.ticketMessages.at(-1).datetime * 1000).toLocaleDateString()}</div>
-                                <div>{new Date(ticket.dateOpened * 1000).toLocaleDateString()}</div>
+                                <div>{ticket.ticketCategory?.name}</div>
+                                <div>{new Date(ticket.messages?.at(-1).dateSent).toLocaleDateString()}</div>
+                                <div>{new Date(ticket.dateOpened).toLocaleDateString()}</div>
                             </div>
                         )
-                        : <></>
+                        : <React.Fragment key={`closedTicket--${ticket.id}`}></React.Fragment>
                 })
             }
         </>
     )
 }
+
+export default TicketList

@@ -18,3 +18,8 @@ INSERT INTO dbo.MealType ([Name]) VALUES ('Breakfast'), ('Lunch'), ('Dinner'), (
 GO
 
 INSERT INTO dbo.TicketCategory ([Name]) VALUES ('General'), ('Feature Request'), ('Account'), ('Bug Report')
+GO
+
+INSERT INTO dbo.Ticket (Title, TicketCategoryId, UserProfileId) VALUES ('Test Ticket 1', 1, 1), ('Test Ticket 2', 1, 1), ('Test Ticket 3', 1, 1)
+GO
+INSERT INTO dbo.TicketMessage ([Message], DateSent, TicketId, UserProfileId) VALUES ('Test Message', '2023-02-16 20:30:44.290', 1, 1), ('Test Message', NULL, 2, 1), ('Test Message', NULL, 3, 1), ('Hello, are there any job openings for NutriHelp?', '2023-02-16 20:32:46.833', 1, 1)

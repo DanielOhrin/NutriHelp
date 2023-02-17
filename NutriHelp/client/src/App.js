@@ -23,7 +23,7 @@ function App() {
         getCurrentProfile(false)
           .then(userProfile => {
             const newCredentials = {
-              Id: userProfile.id,
+              id: userProfile.id,
               role: userProfile.userType.name,
               email: userProfile.email
             }
@@ -42,11 +42,11 @@ function App() {
 
   return (
     <Router>
-      <CredentialsContext.Provider value={credentials}>
+      <CredentialsContext.Provider value={{ credentials }}>
         <Header isLoggedIn={isLoggedIn} />
         <ApplicationViews isLoggedIn={isLoggedIn} />
+        <Footer />
       </CredentialsContext.Provider>
-      <Footer />
     </Router>
   );
 }

@@ -1,0 +1,121 @@
+#ticket-article {
+    height: 95.25%;
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+}
+
+#ticket-section {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center; 
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: 50%;
+    border: 0.2rem solid rgba(0, 0, 0, 0.637);
+}
+
+#ticket-section > header, #ticket-section > footer {
+    width: 95%;
+}
+
+#ticket-section > header {
+    height: 75%;
+    border: groove 1px black;
+    box-shadow: 1px 1.25px;
+    overflow: auto;
+    margin-bottom: 0.25rem;
+}
+
+#ticket-section > header > div.self-start, #ticket-section > header > div.self-end {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 0.25rem;
+    min-width: 10rem;
+    height: auto;
+    margin-bottom: 0.5rem;
+    max-width: 75%;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+#ticket-section > header > div.self-start {
+    border: 2px solid rgb(51, 175, 57);
+    background-color: rgb(77, 255, 85);
+    border-top-right-radius: 360rem;
+    border-bottom-right-radius: 360rem;
+    border-left: none;
+    padding-right: 2.15rem;
+}
+
+#ticket-section > header > div.self-end {
+    border: 2px solid rgb(40, 108, 153);
+    background-color: rgb(67, 180, 255);
+    border-top-left-radius: 360rem;
+    border-bottom-left-radius: 360rem;
+    border-right: none;
+    padding-left: 2.15rem;
+    
+}
+
+#send-message-div {
+    display: flex;
+    justify-content: space-between;
+}
+
+#message-input {
+    border-radius: 360rem;
+    height: 1rem;
+    padding: 1rem;
+    width: 82.5%;
+}
+
+#message-btn {
+    border-radius: 360rem;
+    font-size: 1.1rem;
+    background-color: rgb(60, 210, 255);
+}
+
+#message-btn:hover {
+    background-color: rgb(79, 214, 255);
+}
+
+#message-btn:active {
+    background-color: rgb(124, 224, 255);
+}
+/*!------------------------------DIVIDER-----------------------------*/
+#tickets > div {
+    width: 90%;
+}
+
+#tickets > div:nth-child(even) {
+    background-color: lightgray;
+}
+
+#tickets > div:nth-child(odd) {
+    background-color: rgb(182, 182, 182);
+}
+
+#tickets {
+    padding-right: 0.25rem;
+    padding-bottom: 5rem;
+}
+
+.contact-btn {
+    padding: 2.5rem;
+    border-radius: 360rem;
+    width: 50%;
+    font-size: 2rem;
+    box-shadow: 1px 1px inset;
+    background-color: rgb(199, 199, 199);
+    text-shadow: 1px 1px;
+}
+
+.contact-btn:hover {
+    background-color: rgb(228, 228, 228);
+}
+
+.contact-btn:active {
+    background-color: rgb(241, 241, 241);
+} 

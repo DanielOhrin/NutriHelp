@@ -126,7 +126,7 @@ namespace NutriHelp.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "dbo.CloseTicket";
+                    cmd.CommandText = "dbo.SendMessage";
 
                     DbUtils.AddParameter(cmd, "@Message", ticketMessage.Message);
                     DbUtils.AddParameter(cmd, "@MessageUserProfileId", ticketMessage.UserProfileId);
@@ -186,6 +186,7 @@ namespace NutriHelp.Repositories
                                     Message = DbUtils.GetString(reader, "Message"),
                                     TicketId = ticket.Id,
                                     UserProfileId = DbUtils.GetInt(reader, "MessageUserProfileId"),
+                                    UserProfile = new() { Id = DbUtils.GetInt(reader, "MessageUserProfileId"), Username = DbUtils.GetString(reader, "Username") },
                                     DateSent = DbUtils.GetDateTime(reader, "DateSent")
                                 }
                             );
